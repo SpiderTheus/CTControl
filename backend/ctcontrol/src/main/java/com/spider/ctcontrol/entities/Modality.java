@@ -6,35 +6,34 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Entity
-@Table(name = "tb_teachers")
+@Table(name = "tb_modalities")
 @Getter
 @Setter
-public class Teacher {
+public class Modality {
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String usename;
-    private String email;
-    private String password;
+    private String name;
 
-    @OneToMany(mappedBy = "teacher")
-    private HashSet<Modality> modalities;
+    @ManyToOne
+    private Teacher teacher;
+    
+    //@OneToMany(mappedBy = "modality")
+    //private HashSet<Turma> turmas; 
 
-    public Teacher() {
+    public Modality() {
     }
 
-    public Teacher(String usename, String email, String password) {
-        this.usename = usename;
-        this.email = email;
-        this.password = password;
+    public Modality(String name, Teacher teacher) {
+        this.name = name;
+        this.teacher = teacher;
     }
 }
