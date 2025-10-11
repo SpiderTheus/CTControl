@@ -1,6 +1,5 @@
 package com.spider.ctcontrol.entities;
 
-import org.hibernate.annotations.ManyToAny;
 
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 
@@ -21,14 +20,14 @@ import lombok.Setter;
 @Entity
 @Table(name = "tb_monthly_fees")
 public class MonthlyFee {
-    private static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    //@OneToOne
-    //private Aluno aluno;
+    @OneToOne
+    private Student student;
     
     @ManyToOne
     private Modality modality;

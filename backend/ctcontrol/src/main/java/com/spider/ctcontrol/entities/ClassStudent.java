@@ -1,10 +1,6 @@
 package com.spider.ctcontrol.entities;
 
-import javax.annotation.processing.Generated;
-
-import org.hibernate.annotations.SecondaryRow;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class ClassGroup {
+public class ClassStudent {
     static final long serialVersionUID = 1L;
     
     @Id
@@ -29,16 +25,15 @@ public class ClassGroup {
     @ManyToOne
     private Modality modality;
 
-    //@OneToMany(mappedBy = "classGroup")
-    //private List<Student> students;
+    @OneToMany(mappedBy = "classGroup")
+    private Set<Student> students;
 
-    public ClassGroup() {
+    public ClassStudent() {
     }
 
-    public ClassGroup(double time, Modality modality) {
+    public ClassStudent(double time, Modality modality) {
         this.time = time;
         this.modality = modality;
     }
 
- 
 }
