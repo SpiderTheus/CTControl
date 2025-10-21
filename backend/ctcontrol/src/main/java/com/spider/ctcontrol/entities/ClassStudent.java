@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class ClassStudent {
+public class ClassStudent implements java.io.Serializable {
     static final long serialVersionUID = 1L;
     
     @Id
@@ -25,7 +25,7 @@ public class ClassStudent {
     @ManyToOne
     private Modality modality;
 
-    @OneToMany(mappedBy = "classGroup")
+    @OneToMany(mappedBy = "classStudent")
     private Set<Student> students;
 
     public ClassStudent() {

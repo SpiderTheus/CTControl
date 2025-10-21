@@ -1,12 +1,13 @@
 package com.spider.ctcontrol.entities;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,19 +16,20 @@ import lombok.Setter;
 @Table(name = "tb_modalities")
 @Getter
 @Setter
-public class Modality {
-    private static final long serialVersionUID = 1L;
+public class Modality implements java.io.Serializable {
+    static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
+    
     @ManyToOne
     private Teacher teacher;
     
-    //@OneToMany(mappedBy = "modality")
-    //private HashSet<Turma> turmas; 
+    @OneToMany(mappedBy = "modality")
+    private Set<ClassStudent> classStudents;
 
     public Modality() {
     }

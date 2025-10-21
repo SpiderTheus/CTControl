@@ -16,7 +16,7 @@ import lombok.Setter;
 @Table(name = "tb_teachers")
 @Getter
 @Setter
-public class Teacher {
+public class Teacher implements java.io.Serializable {
    static final long serialVersionUID = 1L;
 
     @Id
