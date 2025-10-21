@@ -17,11 +17,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Modality implements java.io.Serializable {
-    static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
     
@@ -29,7 +30,7 @@ public class Modality implements java.io.Serializable {
     private Teacher teacher;
     
     @OneToMany(mappedBy = "modality")
-    private Set<ClassStudent> classStudents;
+    private transient Set<ClassStudent> classStudents;
 
     public Modality() {
     }

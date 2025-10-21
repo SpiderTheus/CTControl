@@ -20,7 +20,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "tb_monthly_fees")
 public class MonthlyFee implements java.io.Serializable {
-    static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

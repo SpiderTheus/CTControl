@@ -1,6 +1,6 @@
 package com.spider.ctcontrol.entities;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Teacher implements java.io.Serializable {
-   static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class Teacher implements java.io.Serializable {
     private String password;
 
     @OneToMany(mappedBy = "teacher")
-    private HashSet<Modality> modalities;
+    private transient Set<Modality> modalities;
 
     public Teacher() {
     }

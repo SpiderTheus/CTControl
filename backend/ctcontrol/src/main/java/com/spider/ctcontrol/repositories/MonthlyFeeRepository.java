@@ -1,4 +1,4 @@
-package com.spider.ctcontrol.repositores;
+package com.spider.ctcontrol.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
