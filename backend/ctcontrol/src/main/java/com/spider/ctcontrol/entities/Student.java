@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,20 +29,25 @@ public class Student implements java.io.Serializable {
     private Gender gender;
     private String birthDate;
     private String cpf; 
+
+    @OneToOne
+    @JoinColumn(name = "monthly_fee_id", unique = true)
+    private MonthlyFee monthlyFee;
     
     @ManyToOne
     @JoinColumn(name = "class_student_id")
-    private ClassStudent classStudent;  
+    private ClassStudent classStudent;
     
     public Student() {
     }
-    public Student(String name, String email, String phone, Gender gender, String birthDate, String cpf, ClassStudent classStudent) {
+    public Student(String name, String email, String phone, Gender gender, String birthDate, String cpf) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.gender = gender;
         this.birthDate = birthDate;
         this.cpf = cpf;
-        this.classStudent = classStudent;               
+       
+        
     }
 }

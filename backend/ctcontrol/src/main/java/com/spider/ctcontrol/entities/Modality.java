@@ -34,6 +34,8 @@ public class Modality implements java.io.Serializable {
     @OneToMany(mappedBy = "modality")
     private transient Set<ClassStudent> classStudents;
 
+    
+
     public Modality() {
     }
 

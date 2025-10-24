@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
@@ -22,18 +23,25 @@ public class ClassStudent implements java.io.Serializable {
     private Long id;
     private double time;
 
+    private String daysWeek;
+
     @ManyToOne
     private Modality modality;
 
-    @OneToMany(mappedBy = "classStudent")
+    @OneToMany
     private Set<Student> students;
+
+    @ManyToOne
+    private MonthlyFee monthlyFee;
 
     public ClassStudent() {
     }
 
-    public ClassStudent(double time, Modality modality) {
+    public ClassStudent(double time, String daysWeek, Modality modality, Set<Student> students) {
         this.time = time;
+        this.daysWeek = daysWeek;
         this.modality = modality;
+        this.students = students;
     }
 
 }
