@@ -1,6 +1,5 @@
 package com.spider.ctcontrol.config;
 
-import java.time.Month;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -62,16 +61,27 @@ public class testConfig implements CommandLineRunner {
         Student student3 = new Student("Carlos Eduardo", "carlos.eduardo@example.com", "456789123", Gender.MALE, "2001-02-15", "456.789.123-00");
 
         studentRepository.saveAll(Arrays.asList(student1, student2, student3));
-  
-        ClassStudent classStudent1 = new ClassStudent(10, "Mon, Wed, Fri", modality1, Set.of(student1, student2));
-        ClassStudent classStudent2 = new ClassStudent(15.30, "Tue, Thu", modality2, Set.of(student3));
+
+        ClassStudent classStudent1 = new ClassStudent(10, 100.0, "Mon, Wed, Fri", modality1, Set.of(student1, student2));
+        ClassStudent classStudent2 = new ClassStudent(15.30, 150.0, "Tue, Thu", modality2, Set.of(student3));
 
         classStudentRepository.saveAll(Arrays.asList(classStudent1, classStudent2));
 
-        MonthlyFee fee1 = new MonthlyFee( student1, 150.0, PaymentStatus.PAID, 5, Set.of(classStudent1));
-        MonthlyFee fee2 = new MonthlyFee(student2, 150.0, PaymentStatus.PENDING, 5, Set.of(classStudent1));
-        MonthlyFee fee3 = new MonthlyFee(student3, 200.0, PaymentStatus.OVERDUE, 10, Set.of(classStudent2));
+        MonthlyFee fee1 = new MonthlyFee( student1, PaymentStatus.PAID, 5, Set.of(classStudent1));
+        MonthlyFee fee2 = new MonthlyFee(student2, PaymentStatus.PENDING, 5, Set.of(classStudent1));
+        MonthlyFee fee3 = new MonthlyFee(student3, PaymentStatus.OVERDUE, 10, Set.of(classStudent2));
 
         monthlyFeeRepository.saveAll(Arrays.asList(fee1, fee2, fee3));
-    }
+
+        Student s = new Student("Matheus", "email@email.com", "999999", Gender.MALE, "2000-01-01", "000.000.000-00");
+
+        ClassStudent turma = classStudentRepository.findById(1L).get();
+        MonthlyFee mensalidade = monthlyFeeRepository.findById(1L).get();
+
+        s.setClassStudent(turma);
+        s.setMonthlyFee(mensalidade);
+
+        studentRepository.save(s);
+
+            }
 }

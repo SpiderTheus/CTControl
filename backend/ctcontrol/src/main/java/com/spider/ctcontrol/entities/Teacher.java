@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -28,6 +29,10 @@ public class Teacher implements java.io.Serializable {
 
     @OneToMany(mappedBy = "teacher")
     private transient Set<Modality> modalities;
+
+    @OneToMany(mappedBy = "teacher")
+    @JoinColumn(name = "class_students_id")
+    private transient Set<ClassStudent> classStudents;
 
     public Teacher() {
     }

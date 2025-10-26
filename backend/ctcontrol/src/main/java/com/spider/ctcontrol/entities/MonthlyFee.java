@@ -46,11 +46,12 @@ public class MonthlyFee implements java.io.Serializable{
     public MonthlyFee() {
     }
 
-    public MonthlyFee(Student student,Double amount, PaymentStatus status, int dueDay, Set<ClassStudent> classStudents) {
+    public MonthlyFee(Student student, PaymentStatus status, int dueDay, Set<ClassStudent> classStudents) {
         this.student = student;
-        this.amount = amount;
+        
         this.status = status;
         this.dueDay = dueDay;
         this.classStudents = classStudents;
+        this.amount = classStudents.stream().mapToDouble(ClassStudent::getCostMonthly).sum();
     }
 }
