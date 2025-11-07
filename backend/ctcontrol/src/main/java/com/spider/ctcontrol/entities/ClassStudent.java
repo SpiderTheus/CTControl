@@ -21,15 +21,17 @@ public class ClassStudent implements java.io.Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    private Teacher teacher;
+
     private double time;
 
     private Double costMonthly;
 
     private String daysWeek;
 
-    @ManyToOne
-    private Teacher teacher;
-
+    
     @ManyToOne
     private Modality modality;
 
@@ -42,12 +44,12 @@ public class ClassStudent implements java.io.Serializable {
     public ClassStudent() {
     }
 
-    public ClassStudent(double time, double costMonthly, String daysWeek, Modality modality, Set<Student> students) {
+    public ClassStudent(Teacher teacher, double time, double costMonthly, String daysWeek, Modality modality, Set<Student> students) {
+        this.teacher = teacher;
         this.time = time;
         this.costMonthly = costMonthly;
         this.daysWeek = daysWeek;
         this.modality = modality;
         this.students = students;
     }
-
 }
