@@ -23,7 +23,7 @@ public class Teacher implements java.io.Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String usename;
+    private String username;
     private String email;
     private String password;
 
@@ -37,8 +37,8 @@ public class Teacher implements java.io.Serializable {
     public Teacher() {
     }
 
-    public Teacher(String usename, String email, String password) {
-        this.usename = usename;
+    public Teacher(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
     }

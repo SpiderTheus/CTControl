@@ -13,6 +13,7 @@ import com.spider.ctcontrol.entities.Modality;
 import com.spider.ctcontrol.entities.MonthlyFee;
 import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.Teacher;
+import com.spider.ctcontrol.entities.dtos.StudentDto;
 import com.spider.ctcontrol.entities.enums.Gender;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.ClassStudentRepository;
@@ -85,5 +86,5 @@ public class testConfig implements CommandLineRunner {
 
         studentRepository.save(s);
 
-            }
+    }
 }
