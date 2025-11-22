@@ -17,27 +17,30 @@ import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 public class StudentService {
 
     @Autowired
-    private final StudentRepository studentRepository;
+    private final StudentRepository repository;
 
-    public StudentService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public StudentService(StudentRepository repository) {
+        this.repository = repository;
     }
 
     public Student findById(Long id) {
-        return studentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "Student not found with "));
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "Student not found with "));
     }
 
-    public StudentDto findByname (String name) {
-        return studentRepository.findByNameContainingIgnoreCase(name).orElseThrow(() -> new NoResultsFoundException(name));
-    }
+    public List<StudentDto> findByName (String name) {
+    	List<StudentDto> students = repository.findByNameContainingIgnoreCase(name).stream().map(StudentDto::new).toList();
+		if (students.isEmpty() || students == null)
+			throw new NoResultsFoundException(name);
 
+		return students;
+    }
 
     public List<StudentDto> findAll() {
-        return studentRepository.findAll().stream().map(student -> new StudentDto(student)).toList();
+        return repository.findAll().stream().map(student -> new StudentDto(student)).toList();
     }
 
     public Student insert(Student student) {
-        return studentRepository.save(student);
+        return repository.save(student);
     }
 
 
@@ -50,12 +53,12 @@ public class StudentService {
         student.setBirthDate(studentDetails.getBirthDate());
         student.setCpf(studentDetails.getCpf());
 
-        return studentRepository.save(student);
+        return repository.save(student);
     }
 
     public void delete(Long id) {
         Student student = findById(id);
-        studentRepository.delete(student);
+        repository.delete(student);
     }
 
 

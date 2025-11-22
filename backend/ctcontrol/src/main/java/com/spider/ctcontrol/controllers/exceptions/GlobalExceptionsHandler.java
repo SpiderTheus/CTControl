@@ -26,7 +26,13 @@ public class GlobalExceptionsHandler {
 	}
 
 	@ExceptionHandler(NoResultsFoundException.class)
-	public ResponseEntity<Void> noResultsFoundException(NoResultsFoundException e) {
-		return ResponseEntity.noContent().build();
+	public ResponseEntity<ReplyMessage> noResultsFoundException(Throwable e) {
+		var mensage = e.getMessage();
+		HttpStatus status = HttpStatus.NOT_FOUND;
+
+		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
+
+		return ResponseEntity.status(status).body(err);
 	}
+
 }

@@ -1,15 +1,15 @@
 package com.spider.ctcontrol.repositories;
 
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.spider.ctcontrol.entities.Student;
-import com.spider.ctcontrol.entities.dtos.StudentDto;
+
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    Optional<StudentDto> findByNameContainingIgnoreCase(String name);
+    List<Student> findByNameContainingIgnoreCase(String name);
 
 }

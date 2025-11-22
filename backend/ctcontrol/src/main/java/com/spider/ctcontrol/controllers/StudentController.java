@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spider.ctcontrol.entities.dtos.StudentDto;
 import com.spider.ctcontrol.services.StudentService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -31,6 +32,16 @@ public class StudentController {
         return ResponseEntity.ok().body(students);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<StudentDto> findById(@PathVariable Long id) {
+        StudentDto student = new StudentDto(service.findById(id));
+        return ResponseEntity.ok().body(student);
+    } 
 
+    @GetMapping(value = "/search/{name}")
+    public ResponseEntity<List<StudentDto>> findByName(@PathVariable String name) {
+        List<StudentDto> students = service.findByName(name);
+        return ResponseEntity.ok().body(students);
+    }
 
 }
