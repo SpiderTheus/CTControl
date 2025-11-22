@@ -3,6 +3,7 @@ package com.spider.ctcontrol.entities;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +34,7 @@ public class ClassStudent implements java.io.Serializable {
 
     private String modality;
 
-    @OneToMany(mappedBy = "classStudent")
+    @OneToMany(mappedBy = "classStudent", fetch = FetchType.LAZY)
     private Set<Student> students;
 
     @ManyToOne

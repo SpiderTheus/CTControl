@@ -2,6 +2,7 @@ package com.spider.ctcontrol.entities;
 
 import com.spider.ctcontrol.entities.enums.Gender;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,7 +35,7 @@ public class Student implements java.io.Serializable {
     @JoinColumn(name = "monthly_fee_id", unique = true)
     private MonthlyFee monthlyFee;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "class_student_id")
     private ClassStudent classStudent;
     
