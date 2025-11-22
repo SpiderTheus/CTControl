@@ -28,9 +28,6 @@ public class Teacher implements java.io.Serializable {
     private String password;
 
     @OneToMany(mappedBy = "teacher")
-    private transient Set<Modality> modalities;
-
-    @OneToMany(mappedBy = "teacher")
     @JoinColumn(name = "class_students_id")
     private transient Set<ClassStudent> classStudents;
 

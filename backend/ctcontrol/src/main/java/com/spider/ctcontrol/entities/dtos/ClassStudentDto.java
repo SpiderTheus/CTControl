@@ -26,7 +26,7 @@ public class ClassStudentDto {
         this.time = classStudent.getTime();
         this.costMonthly = classStudent.getCostMonthly();
         this.daysWeek = classStudent.getDaysWeek();
-        this.modality = classStudent.getModality().getName();
+        this.modality = classStudent.getModality();
         this.studentsQtd = classStudent.getStudents().size();
 
     }

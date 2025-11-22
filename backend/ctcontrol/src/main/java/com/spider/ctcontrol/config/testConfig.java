@@ -9,15 +9,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.spider.ctcontrol.entities.ClassStudent;
-import com.spider.ctcontrol.entities.Modality;
+
 import com.spider.ctcontrol.entities.MonthlyFee;
 import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.Teacher;
-import com.spider.ctcontrol.entities.dtos.StudentDto;
+
 import com.spider.ctcontrol.entities.enums.Gender;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.ClassStudentRepository;
-import com.spider.ctcontrol.repositories.ModalityRepository;
+
 import com.spider.ctcontrol.repositories.MonthlyFeeRepository;
 import com.spider.ctcontrol.repositories.StudentRepository;
 import com.spider.ctcontrol.repositories.TeacherRepository;
@@ -32,8 +32,6 @@ public class testConfig implements CommandLineRunner {
     @Autowired
     private TeacherRepository teacherRepository;
 
-    @Autowired
-    private ModalityRepository modalityRepository;
 
     @Autowired
     private StudentRepository studentRepository;
@@ -52,10 +50,6 @@ public class testConfig implements CommandLineRunner {
 
         teacherRepository.saveAll(Arrays.asList(teacher1, teacher2));
 
-        Modality modality1 = new Modality("Taekwondo", teacher1);
-        Modality modality2 = new Modality("Karate", teacher2);
-
-        modalityRepository.saveAll(Arrays.asList(modality1, modality2));
 
         Student student1 = new Student("Alice Johnson", "alice.johnson@example.com", "123456789", Gender.FEMALE, "2000-01-01", "123.456.789-00");
         Student student2 = new Student("Bob Brown", "bob.brown@example.com", "987654321", Gender.MALE, "1999-12-31", "987.654.321-00");
@@ -63,8 +57,8 @@ public class testConfig implements CommandLineRunner {
 
         studentRepository.saveAll(Arrays.asList(student1, student2, student3));
 
-        ClassStudent classStudent1 = new ClassStudent(teacher1, 10, 100.0, "Mon, Wed, Fri", modality1, Set.of(student1, student2, student3));
-        ClassStudent classStudent2 = new ClassStudent(teacher2, 15.30, 150.0, "Tue, Thu", modality2, Set.of(student3));
+        ClassStudent classStudent1 = new ClassStudent(teacher1, 10, 100.0, "Mon, Wed, Fri", "Taekwondo", Set.of(student1, student2, student3));
+        ClassStudent classStudent2 = new ClassStudent(teacher2, 15.30, 150.0, "Tue, Thu", "Taekwondo", Set.of(student3));
 
        
 

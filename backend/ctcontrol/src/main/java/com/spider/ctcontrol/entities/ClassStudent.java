@@ -31,8 +31,7 @@ public class ClassStudent implements java.io.Serializable {
 
     private String daysWeek;
 
-    @ManyToOne
-    private Modality modality;
+    private String modality;
 
     @OneToMany(mappedBy = "classStudent")
     private Set<Student> students;
@@ -45,7 +44,7 @@ public class ClassStudent implements java.io.Serializable {
     public ClassStudent() {
     }
 
-    public ClassStudent(Teacher teacher, double time, double costMonthly, String daysWeek, Modality modality,
+    public ClassStudent(Teacher teacher, double time, double costMonthly, String daysWeek, String modality,
             Set<Student> students) {
         this.teacher = teacher;
         this.time = time;
@@ -53,6 +52,6 @@ public class ClassStudent implements java.io.Serializable {
         this.daysWeek = daysWeek;
         this.modality = modality;
         this.students = students;
-        this.denomination = modality.getName() + " - " + teacher.getUsername();
+        this.denomination = modality + " - " + teacher.getUsername();
     }
 }
