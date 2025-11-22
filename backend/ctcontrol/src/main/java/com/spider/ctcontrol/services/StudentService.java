@@ -32,8 +32,8 @@ public class StudentService {
     }
 
 
-    public List<Student> findAll() {
-        return studentRepository.findAll();
+    public List<StudentDto> findAll() {
+        return studentRepository.findAll().stream().map(student -> new StudentDto(student)).toList();
     }
 
     public Student insert(Student student) {
