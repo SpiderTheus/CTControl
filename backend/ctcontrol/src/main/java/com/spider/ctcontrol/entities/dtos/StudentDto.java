@@ -17,6 +17,7 @@ import lombok.ToString;
 @ToString
 public class StudentDto {
     
+    private Long id;
     private String name;
     private String email;
     private String phone;
@@ -30,6 +31,7 @@ public class StudentDto {
     }
 
     public StudentDto(Student student){
+        this.id = student.getId();  
         this.name = student.getName();
         this.email = student.getEmail();
         this.phone = student.getPhone();

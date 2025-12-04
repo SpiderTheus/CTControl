@@ -47,8 +47,6 @@ public class Student implements java.io.Serializable {
         this.phone = phone;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.cpf = cpf;
-       
-        
+        this.cpf = cpf; 
     }
 }

@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-CtcontrolApplication<ctcontrol>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.spider.ctcontrol.CtcontrolApplication",
+            "projectName": "ctcontrol",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

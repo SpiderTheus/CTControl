@@ -40,7 +40,11 @@ public class StudentService {
     }
 
     public Student insert(Student student) {
-        return repository.save(student);
+        try {
+            return repository.save(student);
+        } catch (Exception e) {
+            throw new RuntimeException("Error inserting student: " + e.getMessage());
+        } 
     }
 
 
