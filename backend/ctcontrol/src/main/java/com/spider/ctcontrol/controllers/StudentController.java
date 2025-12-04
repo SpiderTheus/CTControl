@@ -13,6 +13,8 @@ import com.spider.ctcontrol.entities.dtos.StudentDto;
 import com.spider.ctcontrol.services.StudentService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 @RestController
@@ -47,6 +49,13 @@ public class StudentController {
     public ResponseEntity<Student> createStudent(@RequestBody Student obj) {
         Student student = service.insert(obj);
         return ResponseEntity.ok(student);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id, @RequestBody StudentDto obj) {
+        Student updatedStudent = service.update(id, obj);
+        StudentDto studentDto = new StudentDto(updatedStudent);
+        return ResponseEntity.ok(studentDto);
     }
 
 
