@@ -3,6 +3,7 @@ package com.spider.ctcontrol.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,17 +47,21 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student obj) {
+    public ResponseEntity<Student> insertEntity(@RequestBody Student obj) {
         Student student = service.insert(obj);
         return ResponseEntity.ok(student);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StudentDto> updateStudent(@PathVariable Long id, @RequestBody StudentDto obj) {
+    public ResponseEntity<StudentDto> update(@PathVariable Long id, @RequestBody StudentDto obj) {
         Student updatedStudent = service.update(id, obj);
         StudentDto studentDto = new StudentDto(updatedStudent);
         return ResponseEntity.ok(studentDto);
     }
 
-
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build(); 
+    }
 }

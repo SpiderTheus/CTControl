@@ -31,7 +31,7 @@ public class Student implements java.io.Serializable {
     private String birthDate;
     private String cpf; 
 
-    @OneToOne
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "monthly_fee_id", unique = true)
     private MonthlyFee monthlyFee;
     
