@@ -4,9 +4,9 @@ package com.spider.ctcontrol.entities.dtos;
 import java.util.Optional;
 
 import com.spider.ctcontrol.entities.ClassStudent;
-import com.spider.ctcontrol.entities.MonthlyFee;
 import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.enums.Gender;
+import com.spider.ctcontrol.entities.enums.PaymentStatus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +24,7 @@ public class StudentDto {
     private Gender gender;
     private String birthDate;
     private String cpf; 
-    private double monthlyFee;
+    private PaymentStatus monthlyFee;
     private String classStudent;
 
     public StudentDto() {
@@ -38,9 +38,7 @@ public class StudentDto {
         this.gender = student.getGender();
         this.birthDate = student.getBirthDate();
         this.cpf = student.getCpf();
-        this.monthlyFee = Optional.ofNullable(student.getMonthlyFee())
-                          .map(MonthlyFee::getAmount)
-                          .orElse(0.0);
+        this.monthlyFee = student.getMonthlyFee().getStatus();
         this.classStudent = Optional.ofNullable(student.getClassStudent()).map(ClassStudent::getDenomination).orElse(null);
     }
 

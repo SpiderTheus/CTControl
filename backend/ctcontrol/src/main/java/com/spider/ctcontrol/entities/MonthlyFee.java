@@ -1,7 +1,5 @@
 package com.spider.ctcontrol.entities;
 
-import java.util.Set;
-
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 
 import jakarta.persistence.Entity;
@@ -12,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -33,25 +30,21 @@ public class MonthlyFee implements java.io.Serializable{
     @JoinColumn(name = "student_id", unique = true)
     private Student student;
     
-    @OneToMany(mappedBy = "monthlyFee")
-    private Set<ClassStudent> classStudents;
-
-    private Double amount;
-
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
+
+    private Double amount;
 
     private int dueDay;
 
     public MonthlyFee() {
     }
 
-    public MonthlyFee(Student student, PaymentStatus status, int dueDay, Set<ClassStudent> classStudents) {
-        this.student = student;
+    public MonthlyFee(Student student, PaymentStatus status, double amount, int dueDay) {
         
+        this.student = student;
         this.status = status;
-        this.dueDay = dueDay;
-        this.classStudents = classStudents;
-        this.amount = classStudents.stream().mapToDouble(ClassStudent::getCostMonthly).sum();
+        this.amount = amount;
+        this.dueDay = dueDay; 
     }
 }
