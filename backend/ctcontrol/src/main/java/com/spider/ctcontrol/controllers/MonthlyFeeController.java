@@ -5,11 +5,15 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spider.ctcontrol.entities.MonthlyFee;
 import com.spider.ctcontrol.entities.dtos.MonthlyFeeDto;
+
 import com.spider.ctcontrol.services.MonthlyFeeService;
 
 @RestController
@@ -29,10 +33,24 @@ public class MonthlyFeeController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<MonthlyFee> findById(@PathVariable Long id) {
+    public ResponseEntity<MonthlyFeeDto> findById(@PathVariable Long id) {
         MonthlyFee monthlyFee = service.findById(id);
 
-        return ResponseEntity.ok().body(monthlyFee);
+        return ResponseEntity.ok().body(new MonthlyFeeDto(monthlyFee));
     } 
+
+     @PostMapping
+    public ResponseEntity<MonthlyFee> insertEntity(@RequestBody MonthlyFee obj) {
+        MonthlyFee MonthlyFee = service.insert(obj);
+
+        return ResponseEntity.ok(MonthlyFee);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<MonthlyFee> update(@PathVariable Long id, @RequestBody MonthlyFee obj) {
+        MonthlyFee updatedMonthlyFee = service.update(id, obj);
+
+        return ResponseEntity.ok(updatedMonthlyFee);
+    }
 
 }

@@ -1,6 +1,6 @@
 package com.spider.ctcontrol.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.spider.ctcontrol.entities.enums.Gender;
 
 import jakarta.persistence.CascadeType;
@@ -12,19 +12,23 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_students")
 public class Student implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String name;
     private String email;
     private String phone;
@@ -50,4 +54,5 @@ public class Student implements java.io.Serializable {
         this.birthDate = birthDate;
         this.cpf = cpf; 
     }
+
 }

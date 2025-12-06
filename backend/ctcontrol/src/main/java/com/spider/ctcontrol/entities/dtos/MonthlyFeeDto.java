@@ -1,6 +1,7 @@
 package com.spider.ctcontrol.entities.dtos;
 
 import com.spider.ctcontrol.entities.MonthlyFee;
+import com.spider.ctcontrol.entities.Student;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +21,17 @@ public class MonthlyFeeDto {
     }
 
     public MonthlyFeeDto(MonthlyFee monthlyFee){
-        this.student = monthlyFee.getStudent().getName();
+        this.student = nameStudent(monthlyFee.getStudent());
         this.status = monthlyFee.getStatus().name();
         this.amount = monthlyFee.getAmount();
         this.dueDay = monthlyFee.getDueDay();
     }
+
+    public String nameStudent(Student student){
+        try {
+            return student.getName();
+        } catch (Exception e) {
+            return "Not linked";
+        }
+    } 
 }

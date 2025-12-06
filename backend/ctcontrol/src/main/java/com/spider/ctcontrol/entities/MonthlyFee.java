@@ -13,16 +13,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_monthly_fees")
 public class MonthlyFee implements java.io.Serializable{
     private static final long serialVersionUID = 1L;
     
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
