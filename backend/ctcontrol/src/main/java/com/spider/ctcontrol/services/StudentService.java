@@ -57,7 +57,7 @@ public class StudentService {
         student.setBirthDate(studentDetails.getBirthDate());
         student.setCpf(studentDetails.getCpf());
 
-        return repository.save(student);
+        return insert(student);
     }
 
     public void delete(Long id) {
