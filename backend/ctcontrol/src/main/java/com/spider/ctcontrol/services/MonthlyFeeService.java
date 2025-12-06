@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.spider.ctcontrol.entities.MonthlyFee;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.MonthlyFeeRepository;
+import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -47,9 +48,14 @@ public class MonthlyFeeService {
         repository.delete(monthlyFee);
     }
 
-    public MonthlyFee changeStatus(Long id, String status) {
+    public MonthlyFee statusPaid(Long id) {
         MonthlyFee monthlyFee = findById(id);
-        monthlyFee.setStatus(PaymentStatus.valueOf(status.toUpperCase()));
+
+        if (monthlyFee.getStatus() != PaymentStatus.PAID) {
+             monthlyFee.setStatus(PaymentStatus.PAID);
+        } else {
+            throw new PaymentAlreadyException("Monthly fee is already marked as PAID for student with ID: " + id);
+        }
 
         return insert(monthlyFee);
     }
@@ -60,7 +66,7 @@ public class MonthlyFeeService {
             // Logic to send notification (whatsapp) to the student
             System.out.println("Notification sent to student with ID: " + monthlyFee.getStudent().getId() + " about late payment.");
         } else {
-            throw new IllegalStateException("Monthly fee is not overdue for student with ID: " + monthlyFee.getStudent().getId());
+            throw new PaymentAlreadyException("Monthly fee is not overdue for student with ID: " + monthlyFee.getStudent().getId());
         }   
     }
 

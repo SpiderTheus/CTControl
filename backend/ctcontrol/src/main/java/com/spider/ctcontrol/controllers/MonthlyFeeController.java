@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -53,4 +54,12 @@ public class MonthlyFeeController {
         return ResponseEntity.ok(updatedMonthlyFee);
     }
 
+    @PatchMapping(value = "/{id}/pay")
+    public ResponseEntity<MonthlyFee> markAsPaid(@PathVariable Long id) {
+        MonthlyFee paidMonthlyFee = service.statusPaid(id);
+        return ResponseEntity.ok(paidMonthlyFee);
+    }       
+
+
+    
 }

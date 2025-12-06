@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.spider.ctcontrol.services.exceptions.NoResultsFoundException;
+import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,16 @@ public class GlobalExceptionsHandler {
 	public ResponseEntity<ReplyMessage> noResultsFoundException(Throwable e) {
 		var mensage = e.getMessage();
 		HttpStatus status = HttpStatus.NOT_FOUND;
+
+		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
+
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(PaymentAlreadyException.class)
+	public ResponseEntity<ReplyMessage> paymentAlreadyException(Throwable e) {
+		var mensage = e.getMessage();
+		HttpStatus status = HttpStatus.CONFLICT;
 
 		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
 
