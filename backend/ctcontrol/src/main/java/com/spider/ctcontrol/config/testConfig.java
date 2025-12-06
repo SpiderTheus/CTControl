@@ -64,9 +64,9 @@ public class testConfig implements CommandLineRunner {
 
         classStudentRepository.saveAll(Arrays.asList(classStudent1, classStudent2));
 
-        MonthlyFee fee1 = new MonthlyFee( student1, PaymentStatus.PAID, 70, 10);
-        MonthlyFee fee2 = new MonthlyFee(student2, PaymentStatus.PENDING, 80, 10);
-        MonthlyFee fee3 = new MonthlyFee(student3, PaymentStatus.OVERDUE, 10, 15);
+        MonthlyFee fee1 = new MonthlyFee( student1, PaymentStatus.PAID, 70.0, 10);
+        MonthlyFee fee2 = new MonthlyFee(student2, PaymentStatus.PENDING, 80.0, 10);
+        MonthlyFee fee3 = new MonthlyFee(student3, PaymentStatus.OVERDUE, 10.0, 15);
 
         monthlyFeeRepository.saveAll(Arrays.asList(fee1, fee2, fee3));
 

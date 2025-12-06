@@ -38,7 +38,7 @@ public class StudentDto {
         this.gender = student.getGender();
         this.birthDate = student.getBirthDate();
         this.cpf = student.getCpf();
-        this.monthlyFee = student.getMonthlyFee().getStatus();
+        this.monthlyFee = Optional.ofNullable(student.getMonthlyFee()).map(fee -> fee.getStatus()).orElse(null);
         this.classStudent = Optional.ofNullable(student.getClassStudent()).map(ClassStudent::getDenomination).orElse(null);
     }
 

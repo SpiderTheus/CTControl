@@ -1,5 +1,6 @@
 package com.spider.ctcontrol.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spider.ctcontrol.entities.enums.Gender;
 
 import jakarta.persistence.CascadeType;

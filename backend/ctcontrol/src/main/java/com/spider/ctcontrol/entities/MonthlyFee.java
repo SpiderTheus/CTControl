@@ -1,5 +1,6 @@
 package com.spider.ctcontrol.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 
 import jakarta.persistence.Entity;
@@ -28,6 +29,7 @@ public class MonthlyFee implements java.io.Serializable{
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", unique = true)
+    @JsonIgnore
     private Student student;
     
     @Enumerated(EnumType.STRING)
@@ -40,8 +42,7 @@ public class MonthlyFee implements java.io.Serializable{
     public MonthlyFee() {
     }
 
-    public MonthlyFee(Student student, PaymentStatus status, double amount, int dueDay) {
-        
+    public MonthlyFee(Student student, PaymentStatus status, Double amount, int dueDay) {
         this.student = student;
         this.status = status;
         this.amount = amount;
