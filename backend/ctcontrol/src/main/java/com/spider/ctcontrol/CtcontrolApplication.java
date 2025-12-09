@@ -35,7 +35,7 @@ public class CtcontrolApplication {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
                 .withIdentity("triggerChangeStatus", "groupMonthlyFee")
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 21 23 * * ?")) 
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 5 * * ?")) 
                 .build();
     }
 

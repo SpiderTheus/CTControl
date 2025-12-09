@@ -1,7 +1,8 @@
 package com.spider.ctcontrol.services;
 
+import java.time.LocalDate;
 import java.util.List;
-
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -28,19 +29,20 @@ public class MonthlyFeeService {
         return repository.findAll();
     }
 
-    public MonthlyFee findById(Long id) {
+    public MonthlyFee findById(long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "Monthly fee, not found with "));
     }
 
     public MonthlyFee insert(MonthlyFee monthlyFee) {
         try {
+            Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
             return repository.save(monthlyFee);
         } catch (Exception e) {
             throw new RuntimeException("Error inserting monthly fee: " + e.getMessage());
         } 
     }
 
-    public MonthlyFee update(Long id, MonthlyFee monthlyFeeDetails) {
+    public MonthlyFee update(long id, MonthlyFee monthlyFeeDetails) {
         MonthlyFee monthlyFee = findById(id);
         monthlyFee.setStatus(monthlyFeeDetails.getStatus());
         monthlyFee.setAmount(monthlyFeeDetails.getAmount());
@@ -49,18 +51,19 @@ public class MonthlyFeeService {
         return insert(monthlyFee);
     }   
 
-    public void delete(Long id) {
+    public void delete(long id) {
         MonthlyFee monthlyFee = findById(id);
+        Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
         repository.delete(monthlyFee);
     }
 
   
-    public MonthlyFee statusPaid(Long id) {
+    public MonthlyFee statusPaid(long id) {
         MonthlyFee monthlyFee = findById(id);
-        
 
         if (monthlyFee.getStatus() != PaymentStatus.PAID) {
              monthlyFee.setStatus(PaymentStatus.PAID);
+             monthlyFee.setLastPayment(LocalDate.now());
         } else {
             throw new PaymentAlreadyException("Monthly fee is already marked as PAID for student with ID: " + id);
         }
@@ -68,17 +71,44 @@ public class MonthlyFeeService {
         return insert(monthlyFee);
     }
 
+    public boolean isPaidMonth(MonthlyFee fee) {
+        if(fee.getLastPayment() == null) return false;
+
+        LocalDate lastPayment = fee.getLastPayment();
+        LocalDate today = LocalDate.now();
+
+        return lastPayment.getMonth() == today.getMonth() && lastPayment.getYear() == today.getYear();
+
+    }
+
+
     @Transactional
     public void statusPending() {
-        List<MonthlyFee> fees = repository.findAll();
-        for (MonthlyFee fee : fees) {
-            if (fee.getStatus() == PaymentStatus.PAID) {
-                fee.setStatus(PaymentStatus.PENDING);
-                repository.save(fee);
+        LocalDate today = LocalDate.now();
+        Long dayToday = Long.valueOf(today.getDayOfMonth());
+
+        List<MonthlyFee> fees = repository.findByDueDayAndStatus(dayToday, PaymentStatus.PAID);
+    
+        fees.forEach(fee -> {
+            if(isPaidMonth(fee)){
+                fee.setStatus(PaymentStatus.PENDING);   
             }
-        }
+        });
+        repository.saveAll(fees);
+        
     }   
 
+    @Transactional
+    public void statusOverdue() {
+       LocalDate deadline = LocalDate.now().minusDays(3);
+
+         List<MonthlyFee> lateFees = repository.findLates(deadline.getDayOfMonth());
+     
+          lateFees.forEach(fee -> {
+                fee.setStatus(PaymentStatus.OVERDUE);   
+          });
+          repository.saveAll(lateFees);
+    }
 
 
     public void notifyLatePayment(Long id) {
@@ -91,8 +121,6 @@ public class MonthlyFeeService {
         }   
     }
 
-    public List<MonthlyFee> findByStatus(String status) {
-        return repository.findByStatus(PaymentStatus.valueOf(status.toUpperCase()));
-    }   
+   
 
 }

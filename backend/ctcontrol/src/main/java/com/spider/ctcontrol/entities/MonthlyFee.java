@@ -1,5 +1,7 @@
 package com.spider.ctcontrol.entities;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 
@@ -42,13 +44,16 @@ public class MonthlyFee implements java.io.Serializable{
 
     private int dueDay;
 
+    private LocalDate lastPayment;
+
     public MonthlyFee() {
     }
 
-    public MonthlyFee(Student student, PaymentStatus status, Double amount, int dueDay) {
+    public MonthlyFee(Student student, PaymentStatus status, Double amount, int dueDay, LocalDate lastPayment) {
         this.student = student;
         this.status = status;
         this.amount = amount;
         this.dueDay = dueDay; 
+        this.lastPayment = lastPayment;
     }
 }

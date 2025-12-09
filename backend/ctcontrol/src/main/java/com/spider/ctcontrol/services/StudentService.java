@@ -1,6 +1,7 @@
 package com.spider.ctcontrol.services;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,7 +24,7 @@ public class StudentService {
         this.repository = repository;
     }
 
-    public Student findById(Long id) {
+    public Student findById(long id) {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "Student not found with "));
     }
 
@@ -41,6 +42,7 @@ public class StudentService {
 
     public Student insert(Student student) {
         try {
+            Objects.requireNonNull(student, "Student must not be null");
             return repository.save(student);
         } catch (Exception e) {
             throw new RuntimeException("Error inserting student: " + e.getMessage());
@@ -60,8 +62,9 @@ public class StudentService {
         return insert(student);
     }
 
-    public void delete(Long id) {
+    public void delete(long id) {
         Student student = findById(id);
+        Objects.requireNonNull(student, "Student must not be null");
         repository.delete(student);
     }
 
