@@ -2,6 +2,7 @@ package com.spider.ctcontrol.services;
 
 import java.util.List;
 
+
 import org.springframework.stereotype.Service;
 
 import com.spider.ctcontrol.entities.MonthlyFee;
@@ -10,12 +11,17 @@ import com.spider.ctcontrol.repositories.MonthlyFeeRepository;
 import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class MonthlyFeeService {
+
     private final MonthlyFeeRepository repository;
+
 
     public MonthlyFeeService(MonthlyFeeRepository repository) {
         this.repository = repository;
+       
     }
 
     public List<MonthlyFee> findAll() {
@@ -48,8 +54,10 @@ public class MonthlyFeeService {
         repository.delete(monthlyFee);
     }
 
+  
     public MonthlyFee statusPaid(Long id) {
         MonthlyFee monthlyFee = findById(id);
+        
 
         if (monthlyFee.getStatus() != PaymentStatus.PAID) {
              monthlyFee.setStatus(PaymentStatus.PAID);
@@ -59,6 +67,19 @@ public class MonthlyFeeService {
 
         return insert(monthlyFee);
     }
+
+    @Transactional
+    public void statusPending() {
+        List<MonthlyFee> fees = repository.findAll();
+        for (MonthlyFee fee : fees) {
+            if (fee.getStatus() == PaymentStatus.PAID) {
+                fee.setStatus(PaymentStatus.PENDING);
+                repository.save(fee);
+            }
+        }
+    }   
+
+
 
     public void notifyLatePayment(Long id) {
         MonthlyFee monthlyFee = findById(id);

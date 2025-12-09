@@ -77,6 +77,17 @@
 			<version>6.1.0</version>
 			<scope>provided</scope>
 		</dependency>
+	<dependency>
+    	<groupId>org.quartz-scheduler</groupId>
+    	<artifactId>quartz</artifactId>
+    	<version>2.5.1</version>
+	</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-quartz</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
