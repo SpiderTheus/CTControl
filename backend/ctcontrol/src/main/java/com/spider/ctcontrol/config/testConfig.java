@@ -14,7 +14,7 @@ import com.spider.ctcontrol.entities.ClassStudent;
 import com.spider.ctcontrol.entities.MonthlyFee;
 import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.Teacher;
-
+import com.spider.ctcontrol.entities.User;
 import com.spider.ctcontrol.entities.enums.Gender;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.ClassStudentRepository;
@@ -22,6 +22,8 @@ import com.spider.ctcontrol.repositories.ClassStudentRepository;
 import com.spider.ctcontrol.repositories.MonthlyFeeRepository;
 import com.spider.ctcontrol.repositories.StudentRepository;
 import com.spider.ctcontrol.repositories.TeacherRepository;
+import com.spider.ctcontrol.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.transaction.Transactional;
 
@@ -43,11 +45,17 @@ public class testConfig implements CommandLineRunner {
     @Autowired
     private ClassStudentRepository classStudentRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
         
-        Teacher teacher1 = new Teacher("John Doe", "john.doe@example.com", "123234");
-        Teacher teacher2 = new Teacher("Jane Smith", "jane.smith@example.com", "123235");
+        Teacher teacher1 = new Teacher("John Doe", "123234");
+        Teacher teacher2 = new Teacher("Jane Smith", "123235");
 
         teacherRepository.saveAll(Arrays.asList(teacher1, teacher2));
 
@@ -80,6 +88,11 @@ public class testConfig implements CommandLineRunner {
         s.setMonthlyFee(mensalidade);
 
         studentRepository.save(s);
+
+        User user = new User("user", passwordEncoder.encode("password")); // password: password (BCrypt encoded at runtime)
+        userRepository.save(user);
+
+        
 
     }
 }

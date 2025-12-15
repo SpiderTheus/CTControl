@@ -22,7 +22,7 @@ public class ClassStudentDto {
 
     public ClassStudentDto(ClassStudent classStudent) {
         this.denomination = classStudent.getDenomination();
-        this.teacher = classStudent.getTeacher().getUsername();
+        this.teacher = classStudent.getTeacher().getName();
         this.time = classStudent.getTime();
         this.costMonthly = classStudent.getCostMonthly();
         this.daysWeek = classStudent.getDaysWeek();

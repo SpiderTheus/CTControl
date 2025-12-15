@@ -53,6 +53,6 @@ public class ClassStudent implements java.io.Serializable {
         this.daysWeek = daysWeek;
         this.modality = modality;
         this.students = students;
-        this.denomination = modality + " - " + teacher.getUsername();
+        this.denomination = modality + " - " + teacher.getName();
     }
 }

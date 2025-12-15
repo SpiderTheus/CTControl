@@ -23,10 +23,9 @@ public class Teacher implements java.io.Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
-    private String email;
-    private String password;
-
+    private String name;
+    private String phone;
+ 
     @OneToMany(mappedBy = "teacher")
     @JoinColumn(name = "class_students_id")
     private transient Set<ClassStudent> classStudents;
@@ -34,9 +33,9 @@ public class Teacher implements java.io.Serializable {
     public Teacher() {
     }
 
-    public Teacher(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
+    public Teacher(String name, String phone) {
+
+        this.name = name;
+        this.phone = phone;
+    }   
 }
