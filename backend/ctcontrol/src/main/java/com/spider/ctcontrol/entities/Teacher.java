@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,17 +26,21 @@ public class Teacher implements java.io.Serializable {
     private Long id;
     private String name;
     private String phone;
- 
+    
     @OneToMany(mappedBy = "teacher")
     @JoinColumn(name = "class_students_id")
     private transient Set<ClassStudent> classStudents;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Teacher() {
     }
 
-    public Teacher(String name, String phone) {
-
+    public Teacher(String name, String phone, User user) {
         this.name = name;
         this.phone = phone;
+        this.user = user;
     }   
 }

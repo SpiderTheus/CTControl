@@ -54,8 +54,14 @@ public class testConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         
-        Teacher teacher1 = new Teacher("John Doe", "123234");
-        Teacher teacher2 = new Teacher("Jane Smith", "123235");
+        
+        User user = new User("user", passwordEncoder.encode("password")); // password: password (BCrypt encoded at runtime)
+        User user2 = new User("spider", passwordEncoder.encode("adminpass")); // password: adminpass (BCrypt encoded at runtime)
+
+        userRepository.saveAll(Arrays.asList(user, user2));
+
+        Teacher teacher1 = new Teacher("John Doe", "123234", user);
+        Teacher teacher2 = new Teacher("Jane Smith", "123235", user2);
 
         teacherRepository.saveAll(Arrays.asList(teacher1, teacher2));
 
@@ -88,11 +94,6 @@ public class testConfig implements CommandLineRunner {
         s.setMonthlyFee(mensalidade);
 
         studentRepository.save(s);
-
-        User user = new User("user", passwordEncoder.encode("password")); // password: password (BCrypt encoded at runtime)
-        userRepository.save(user);
-
-        
 
     }
 }

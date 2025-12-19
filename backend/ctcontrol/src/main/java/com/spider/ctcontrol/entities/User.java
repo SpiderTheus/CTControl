@@ -6,6 +6,7 @@ import java.io.Serializable;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,9 @@ public class User implements Serializable {
     @Id
     private String username;
     private String password;
+
+    @OneToOne(mappedBy = "user")
+    private Teacher teacher;
 
     public User() {
     }
