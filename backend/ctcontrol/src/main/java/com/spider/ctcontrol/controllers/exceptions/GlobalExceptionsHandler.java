@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.spider.ctcontrol.services.exceptions.NoResultsFoundException;
 import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
+import com.spider.ctcontrol.services.exceptions.StudentAlreadyEnrolledException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -46,4 +47,13 @@ public class GlobalExceptionsHandler {
 		return ResponseEntity.status(status).body(err);
 	}
 
+	@ExceptionHandler(StudentAlreadyEnrolledException.class)
+	public ResponseEntity<ReplyMessage> studentAlreadyEnrolledException(Throwable e) {
+		var mensage = e.getMessage();
+		HttpStatus status = HttpStatus.CONFLICT;
+
+		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
+
+		return ResponseEntity.status(status).body(err);
+	}
 }
