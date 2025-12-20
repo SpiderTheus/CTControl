@@ -2,7 +2,6 @@ package com.spider.ctcontrol.entities;
 
 import java.io.Serializable;
 
-
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;

@@ -1,6 +1,7 @@
 package com.spider.ctcontrol.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.spider.ctcontrol.entities.enums.Gender;
 
 import jakarta.persistence.CascadeType;
@@ -42,6 +43,7 @@ public class Student implements java.io.Serializable {
     
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "class_student_id")
+    @JsonIgnore
     private ClassStudent classStudent;
     
     public Student() {

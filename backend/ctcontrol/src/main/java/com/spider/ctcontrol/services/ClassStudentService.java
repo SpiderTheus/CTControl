@@ -1,5 +1,6 @@
 package com.spider.ctcontrol.services;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -8,28 +9,38 @@ import org.springframework.stereotype.Service;
 
 import com.spider.ctcontrol.entities.ClassStudent;
 import com.spider.ctcontrol.entities.Student;
+import com.spider.ctcontrol.entities.dtos.ClassStudentDto;
+import com.spider.ctcontrol.entities.dtos.StudentDto;
 import com.spider.ctcontrol.repositories.ClassStudentRepository;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 import com.spider.ctcontrol.services.exceptions.StudentAlreadyEnrolledException;
 
 @Service
-public class ClassStudentSerivice {
+public class ClassStudentService {
     
   private final ClassStudentRepository repository;
 
-  public ClassStudentSerivice(ClassStudentRepository repository) {
+  public ClassStudentService(ClassStudentRepository repository) {
       this.repository = repository;
   }
 
-  public List<ClassStudent> findAll() {
-      return repository.findAll();
+  public List<ClassStudentDto> findAll() {
+    
+      return repository.findAll().stream()
+              .map(ClassStudentDto::new)
+              .toList();
   }
 
-  public Set<Student> findAllStudents(Long classStudentId) {
+  public Set<StudentDto> findAllStudents(Long classStudentId) {
     
-      ClassStudent classStudent = findById(classStudentId);
+    ClassStudent classStudent = findById(classStudentId);
+    Set<StudentDto> students = new HashSet<>();
+        
+      for (Student student : classStudent.getStudents()) {
+          students.add(new StudentDto(student));
+      }
 
-      return classStudent.getStudents();
+      return students;
   }
 
   public ClassStudent findById(long id) {
@@ -47,12 +58,14 @@ public class ClassStudentSerivice {
 
   public ClassStudent insertStudent(Long classStudentId, Student student) {
       ClassStudent classStudent = findById(classStudentId);
+
         if (classStudent.getStudents().contains(student)) {
             throw new StudentAlreadyEnrolledException(student.getId(), classStudentId);
           } else{
             classStudent.getStudents().add(student);
             return repository.save(classStudent);
           }
+
     }
   
   public ClassStudent update(Long id, ClassStudent classStudentDetails) {

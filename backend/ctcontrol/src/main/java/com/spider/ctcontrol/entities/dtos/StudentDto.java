@@ -8,6 +8,7 @@ import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.enums.Gender;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class StudentDto {
     
     private Long id;

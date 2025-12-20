@@ -2,6 +2,8 @@ package com.spider.ctcontrol.entities;
 
 import java.util.Set;
 
+import com.spider.ctcontrol.entities.dtos.StudentDto;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -45,14 +47,12 @@ public class ClassStudent implements java.io.Serializable {
     public ClassStudent() {
     }
 
-    public ClassStudent(Teacher teacher, double time, double costMonthly, String daysWeek, String modality,
-            Set<Student> students) {
+    public ClassStudent(Teacher teacher, double time, double costMonthly, String daysWeek, String modality) {
         this.teacher = teacher;
         this.time = time;
         this.costMonthly = costMonthly;
         this.daysWeek = daysWeek;
         this.modality = modality;
-        this.students = students;
         this.denomination = modality + " - " + teacher.getName();
     }
 }

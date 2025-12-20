@@ -1,5 +1,7 @@
 package com.spider.ctcontrol.entities.dtos;
 
+import java.util.List;
+
 import com.spider.ctcontrol.entities.ClassStudent;
 
 import lombok.Getter;
@@ -14,8 +16,8 @@ public class ClassStudentDto {
     private Double costMonthly;
     private String daysWeek;
     private String modality;
-
     private Integer studentsQtd;
+    private List<StudentDto> students;  
 
     public ClassStudentDto() {
     }
@@ -28,6 +30,9 @@ public class ClassStudentDto {
         this.daysWeek = classStudent.getDaysWeek();
         this.modality = classStudent.getModality();
         this.studentsQtd = classStudent.getStudents().size();
+        this.students = classStudent.getStudents().stream()
+                .map(StudentDto::new)
+                .toList();
 
     }
 }

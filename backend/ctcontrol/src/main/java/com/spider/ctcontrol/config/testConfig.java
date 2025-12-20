@@ -2,7 +2,7 @@ package com.spider.ctcontrol.config;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Set;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -72,10 +72,9 @@ public class testConfig implements CommandLineRunner {
 
         studentRepository.saveAll(Arrays.asList(student1, student2, student3));
 
-        ClassStudent classStudent1 = new ClassStudent(teacher1, 10, 100.0, "Mon, Wed, Fri", "Taekwondo", Set.of(student1, student2, student3));
-        ClassStudent classStudent2 = new ClassStudent(teacher2, 15.30, 150.0, "Tue, Thu", "Taekwondo", Set.of(student3));
+        ClassStudent classStudent1 = new ClassStudent(teacher1, 10, 100.0, "Mon, Wed, Fri", "Taekwondo");
+        ClassStudent classStudent2 = new ClassStudent(teacher2, 15.30, 150.0, "Tue, Thu", "Taekwondo");
 
-       
 
         classStudentRepository.saveAll(Arrays.asList(classStudent1, classStudent2));
 
@@ -83,17 +82,21 @@ public class testConfig implements CommandLineRunner {
         MonthlyFee fee2 = new MonthlyFee(student2, PaymentStatus.PENDING, 80.0, 10, null);
         MonthlyFee fee3 = new MonthlyFee(student3, PaymentStatus.OVERDUE, 10.0, 15, null);
 
+        
         monthlyFeeRepository.saveAll(Arrays.asList(fee1, fee2, fee3));
 
-        Student s = new Student("Matheus", "email@email.com", "999999", Gender.MALE, "2000-01-01", "000.000.000-00");
+        Student s4 = new Student("Matheus", "email@email.com", "999999", Gender.MALE, "2000-01-01", "000.000.000-00");
 
-        ClassStudent turma = classStudentRepository.findById(1L).get();
-        MonthlyFee mensalidade = monthlyFeeRepository.findById(1L).get();
+        student1.setClassStudent(classStudent1);
+        student1.setMonthlyFee(fee1);
+        student2.setClassStudent(classStudent1);
+        student2.setMonthlyFee(fee2);
+        student3.setClassStudent(classStudent2);
+        student3.setMonthlyFee(fee3);
 
-        s.setClassStudent(turma);
-        s.setMonthlyFee(mensalidade);
-
-        studentRepository.save(s);
-
+        s4.setClassStudent(classStudent1);
+        s4.setMonthlyFee(fee1);
+        
+        studentRepository.saveAll(Arrays.asList(student1, student2, student3, s4));
     }
 }
