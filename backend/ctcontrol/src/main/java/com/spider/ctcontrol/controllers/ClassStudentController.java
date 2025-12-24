@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spider.ctcontrol.services.ClassStudentService;
-
+import com.spider.ctcontrol.entities.ClassStudent;
 import com.spider.ctcontrol.entities.dtos.ClassStudentDto;
 import com.spider.ctcontrol.entities.dtos.StudentDto;
 
@@ -37,4 +37,12 @@ public class ClassStudentController {
       Set<StudentDto> students  = service.findAllStudents(id);
       return ResponseEntity.ok().body(students); 
   }
+
+   @GetMapping(value = "/{id}")
+    public ResponseEntity<ClassStudentDto> findById(@PathVariable Long id) {
+        ClassStudent classStudent = service.findById(id);
+
+        return ResponseEntity.ok().body(new ClassStudentDto(classStudent));
+    } 
+
 }

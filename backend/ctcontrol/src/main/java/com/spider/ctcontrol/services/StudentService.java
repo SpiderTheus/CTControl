@@ -55,9 +55,6 @@ public class StudentService {
         student.setName(studentDetails.getName());
         student.setEmail(studentDetails.getEmail());
         student.setPhone(studentDetails.getPhone());
-        student.setGender(studentDetails.getGender());
-        student.setBirthDate(studentDetails.getBirthDate());
-        student.setCpf(studentDetails.getCpf());
 
         return insert(student);
     }
