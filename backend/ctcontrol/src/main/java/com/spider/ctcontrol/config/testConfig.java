@@ -60,8 +60,8 @@ public class testConfig implements CommandLineRunner {
 
         userRepository.saveAll(Arrays.asList(user, user2));
 
-        Teacher teacher1 = new Teacher("John Doe", "123234", user);
-        Teacher teacher2 = new Teacher("Jane Smith", "123235", user2);
+        Teacher teacher1 = new Teacher("John Doe", "123234");
+        Teacher teacher2 = new Teacher("Jane Smith", "123235");
 
         teacherRepository.saveAll(Arrays.asList(teacher1, teacher2));
 
@@ -72,9 +72,10 @@ public class testConfig implements CommandLineRunner {
 
         studentRepository.saveAll(Arrays.asList(student1, student2, student3));
 
-        ClassStudent classStudent1 = new ClassStudent(teacher1, 10, 100.0, "Mon, Wed, Fri", "Taekwondo");
-        ClassStudent classStudent2 = new ClassStudent(teacher2, 15.30, 150.0, "Tue, Thu", "Taekwondo");
-
+        ClassStudent classStudent1 = new ClassStudent(10, 100.0, "Mon, Wed, Fri", "Taekwondo");
+        ClassStudent classStudent2 = new ClassStudent(15.30, 150.0, "Tue, Thu", "Taekwondo");
+        classStudent1.setTeacher(teacher2);
+        classStudent2.setTeacher(teacher1);
 
         classStudentRepository.saveAll(Arrays.asList(classStudent1, classStudent2));
 

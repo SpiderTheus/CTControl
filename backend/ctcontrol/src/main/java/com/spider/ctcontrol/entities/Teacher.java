@@ -41,9 +41,8 @@ public class Teacher implements java.io.Serializable {
     public Teacher() {
     }
 
-    public Teacher(String name, String phone, User user) {
+    public Teacher(String name, String phone) {
         this.name = name;
         this.phone = phone;
-        this.user = user;
     }   
 }

@@ -46,12 +46,11 @@ public class ClassStudent implements java.io.Serializable {
     public ClassStudent() {
     }
 
-    public ClassStudent(Teacher teacher, double time, double costMonthly, String daysWeek, String modality) {
-        this.teacher = teacher;
+    public ClassStudent(double time, double costMonthly, String daysWeek, String modality) {
         this.time = time;
         this.costMonthly = costMonthly;
         this.daysWeek = daysWeek;
         this.modality = modality;
-        this.denomination = modality + " - " + teacher.getName();
+        this.denomination = modality + " - " + daysWeek + " - " + time + "h";
     }
 }

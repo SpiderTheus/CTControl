@@ -20,8 +20,11 @@ public class ClassStudentService {
     
   private final ClassStudentRepository repository;
 
-  public ClassStudentService(ClassStudentRepository repository) {
+  private final TeacherService teacherService;  
+
+  public ClassStudentService(ClassStudentRepository repository, TeacherService teacherService) {
       this.repository = repository;
+      this.teacherService = teacherService;
   }
 
   public List<ClassStudentDto> findAll() {
@@ -47,16 +50,17 @@ public class ClassStudentService {
       return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "ClassStudent, not found with "));
   } 
   
-  public ClassStudent insert(ClassStudent ClassStudent) {
+  public ClassStudent insert(ClassStudent ClassStudent, Long teacherId) {
         try {
             Objects.requireNonNull(ClassStudent, "ClassStudent must not be null");
+            ClassStudent.setTeacher(teacherService.findById(teacherId));
             return repository.save(ClassStudent);
         } catch (Exception e) {
             throw new RuntimeException("Error inserting ClassStudent: " + e.getMessage());
         } 
     }
 
-  public ClassStudent insertStudent(Long classStudentId, Student student) {
+  public ClassStudent addStudent(Long classStudentId, Student student) {
       ClassStudent classStudent = findById(classStudentId);
 
         if (classStudent.getStudents().contains(student)) {
