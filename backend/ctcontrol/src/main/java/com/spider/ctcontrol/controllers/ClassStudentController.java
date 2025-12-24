@@ -1,14 +1,19 @@
 package com.spider.ctcontrol.controllers;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spider.ctcontrol.services.ClassStudentService;
+
 import com.spider.ctcontrol.entities.dtos.ClassStudentDto;
+import com.spider.ctcontrol.entities.dtos.StudentDto;
 
 @RestController
 @RequestMapping(value = "/class-students")
@@ -27,4 +32,9 @@ public class ClassStudentController {
       return ResponseEntity.ok().body(classStudents); 
   }
 
+  @GetMapping(value = "/students/{id}")
+  public ResponseEntity<Set<StudentDto>> findAllStudents(@PathVariable Long id) {    
+      Set<StudentDto> students  = service.findAllStudents(id);
+      return ResponseEntity.ok().body(students); 
+  }
 }

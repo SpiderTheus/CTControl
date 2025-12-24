@@ -2,7 +2,6 @@ package com.spider.ctcontrol.entities;
 
 import java.util.Set;
 
-import com.spider.ctcontrol.entities.dtos.StudentDto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
