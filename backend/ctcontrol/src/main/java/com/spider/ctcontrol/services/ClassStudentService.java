@@ -22,9 +22,12 @@ public class ClassStudentService {
 
   private final TeacherService teacherService;  
 
-  public ClassStudentService(ClassStudentRepository repository, TeacherService teacherService) {
+  private final StudentService studentService;
+
+  public ClassStudentService(ClassStudentRepository repository, TeacherService teacherService, StudentService studentService) {
       this.repository = repository;
       this.teacherService = teacherService;
+      this.studentService = studentService;
   }
 
   public List<ClassStudentDto> findAll() {
@@ -60,8 +63,10 @@ public class ClassStudentService {
         } 
     }
 
-  public ClassStudent addStudent(Long classStudentId, Student student) {
+  public ClassStudent addStudent(Long classStudentId, Long studentId) {
       ClassStudent classStudent = findById(classStudentId);
+      Student student = studentService.findById(studentId);
+
 
         if (classStudent.getStudents().contains(student)) {
             throw new StudentAlreadyEnrolledException(student.getId(), classStudentId);

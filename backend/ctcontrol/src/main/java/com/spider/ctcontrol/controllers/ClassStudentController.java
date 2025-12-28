@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,4 +55,11 @@ public class ClassStudentController {
         ClassStudent classStudent = service.insert(obj, teacherId);
         return ResponseEntity.ok(classStudent);
     }
+
+    @PatchMapping(value = "/{classStudentId}/student/{studentId}")
+    public ResponseEntity<ClassStudent> addStudent(@PathVariable Long classStudentId, @PathVariable Long studentId) {
+        ClassStudent classStudent = service.addStudent(classStudentId, studentId);
+        return ResponseEntity.ok(classStudent);
+    }
+
 }
