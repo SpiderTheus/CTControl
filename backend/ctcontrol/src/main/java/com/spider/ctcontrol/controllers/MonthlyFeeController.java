@@ -57,7 +57,7 @@ public class MonthlyFeeController {
 
     @PatchMapping(value = "/{id}/pay")
     public ResponseEntity<MonthlyFee> markAsPaid(@PathVariable Long id) {
-        MonthlyFee paidMonthlyFee = service.statusPaid(id);
+        MonthlyFee paidMonthlyFee = service.payMonthlyFee(id);
         return ResponseEntity.ok(paidMonthlyFee);
     }       
 

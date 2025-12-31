@@ -76,22 +76,7 @@ public class MonthlyFeeService {
     }   
 
     @Transactional
-    public void delete(long id) {
-        MonthlyFee monthlyFee = findById(id);
-        Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
-    
-        if (monthlyFee.getStudent() != null) {
-            monthlyFee.getStudent().setMonthlyFee(null);
-            monthlyFee.setStudent(null);
-        }
-        
-        repository.delete(monthlyFee);
-    }
-        
-    
-
-  
-    public MonthlyFee statusPaid(long id) {
+    public MonthlyFee payMonthlyFee(long id) {
         MonthlyFee monthlyFee = findById(id);
 
         if (monthlyFee.getStatus() != PaymentStatus.PAID) {
@@ -104,6 +89,21 @@ public class MonthlyFeeService {
         return insert(monthlyFee);
     }
 
+
+    @Transactional
+    public void delete(long id) {
+        MonthlyFee monthlyFee = findById(id);
+        Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
+    
+        if (monthlyFee.getStudent() != null) {
+            monthlyFee.getStudent().setMonthlyFee(null);
+            monthlyFee.setStudent(null);
+        }
+        
+        repository.delete(monthlyFee);
+    }
+        
+  
     public boolean isPaidMonth(MonthlyFee fee) {
         if(fee.getLastPayment() == null) return false;
 
