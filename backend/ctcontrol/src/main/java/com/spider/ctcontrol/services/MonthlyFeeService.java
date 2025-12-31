@@ -7,6 +7,8 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 import com.spider.ctcontrol.entities.MonthlyFee;
+import com.spider.ctcontrol.entities.Student;
+import com.spider.ctcontrol.entities.dtos.MonthlyFeeDto;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.MonthlyFeeRepository;
 import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
@@ -19,10 +21,11 @@ public class MonthlyFeeService {
 
     private final MonthlyFeeRepository repository;
 
+    private final StudentService studentService;
 
-    public MonthlyFeeService(MonthlyFeeRepository repository) {
+    public MonthlyFeeService(MonthlyFeeRepository repository, StudentService studentService) {
         this.repository = repository;
-       
+        this.studentService = studentService;
     }
 
     public List<MonthlyFee> findAll() {
@@ -42,6 +45,27 @@ public class MonthlyFeeService {
         } 
     }
 
+    @Transactional
+    public MonthlyFee enrollStudent(MonthlyFeeDto dto, Long studentId) {
+        Student student = studentService.findById(studentId);
+
+        MonthlyFee monthly = student.getMonthlyFee();
+
+        if (monthly == null) {
+            monthly = new MonthlyFee();
+            monthly.setStudent(student);
+            student.setMonthlyFee(monthly);
+        }
+
+        monthly = update(studentId, monthly);
+
+        monthly.setLastPayment(null);
+
+        return repository.save(monthly);
+    }
+
+   
+
     public MonthlyFee update(long id, MonthlyFee monthlyFeeDetails) {
         MonthlyFee monthlyFee = findById(id);
         monthlyFee.setStatus(monthlyFeeDetails.getStatus());
@@ -51,11 +75,20 @@ public class MonthlyFeeService {
         return insert(monthlyFee);
     }   
 
+    @Transactional
     public void delete(long id) {
         MonthlyFee monthlyFee = findById(id);
         Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
+    
+        if (monthlyFee.getStudent() != null) {
+            monthlyFee.getStudent().setMonthlyFee(null);
+            monthlyFee.setStudent(null);
+        }
+        
         repository.delete(monthlyFee);
     }
+        
+    
 
   
     public MonthlyFee statusPaid(long id) {

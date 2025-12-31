@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 public class MonthlyFeeDto {
     
+    private Long id; 
     private String student;
     private String status;
     private Double amount;
@@ -21,6 +22,8 @@ public class MonthlyFeeDto {
     }
 
     public MonthlyFeeDto(MonthlyFee monthlyFee){
+        
+        this.id = monthlyFee.getId();
         this.student = nameStudent(monthlyFee.getStudent());
         this.status = monthlyFee.getStatus().name();
         this.amount = monthlyFee.getAmount();

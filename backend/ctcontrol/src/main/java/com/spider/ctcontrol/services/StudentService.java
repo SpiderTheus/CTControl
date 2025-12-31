@@ -3,8 +3,6 @@ package com.spider.ctcontrol.services;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import com.spider.ctcontrol.entities.Student;
@@ -17,7 +15,6 @@ import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 @Service
 public class StudentService {
 
-    @Autowired
     private final StudentRepository repository;
 
     public StudentService(StudentRepository repository) {
@@ -62,9 +59,12 @@ public class StudentService {
     public void delete(long id) {
         Student student = findById(id);
         Objects.requireNonNull(student, "Student must not be null");
+        student.setMonthlyFee(null);
+        student.setClassStudent(null);
+        
         repository.delete(student);
     }
 
-
+    
 
 }

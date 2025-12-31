@@ -41,9 +41,9 @@ public class MonthlyFeeController {
         return ResponseEntity.ok().body(new MonthlyFeeDto(monthlyFee));
     } 
 
-     @PostMapping
-    public ResponseEntity<MonthlyFee> insertEntity(@RequestBody MonthlyFee obj) {
-        MonthlyFee MonthlyFee = service.insert(obj);
+    @PostMapping(value = "/enroll/{studentId}")
+    public ResponseEntity<MonthlyFee> enrolStudent(@PathVariable Long studentId, @RequestBody MonthlyFeeDto monthlyFeeDto) {
+        MonthlyFee MonthlyFee = service.enrollStudent(monthlyFeeDto, studentId);
 
         return ResponseEntity.ok(MonthlyFee);
     }

@@ -38,10 +38,9 @@ public class Student implements java.io.Serializable {
     private String cpf; 
 
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "monthly_fee_id", unique = true)
     private MonthlyFee monthlyFee;
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "class_student_id")
     @JsonIgnore
     private ClassStudent classStudent;

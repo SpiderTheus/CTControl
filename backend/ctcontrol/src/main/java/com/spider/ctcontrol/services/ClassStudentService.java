@@ -11,6 +11,7 @@ import com.spider.ctcontrol.entities.ClassStudent;
 import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.dtos.ClassStudentDto;
 import com.spider.ctcontrol.entities.dtos.StudentDto;
+import com.spider.ctcontrol.entities.dtos.classStudentDetails;
 import com.spider.ctcontrol.repositories.ClassStudentRepository;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 import com.spider.ctcontrol.services.exceptions.StudentAlreadyEnrolledException;
@@ -24,10 +25,13 @@ public class ClassStudentService {
 
   private final StudentService studentService;
 
+
+
   public ClassStudentService(ClassStudentRepository repository, TeacherService teacherService, StudentService studentService) {
       this.repository = repository;
       this.teacherService = teacherService;
       this.studentService = studentService;
+     
   }
 
   public List<ClassStudentDto> findAll() {
@@ -63,28 +67,30 @@ public class ClassStudentService {
         } 
     }
 
-  public ClassStudent addStudent(Long classStudentId, Long studentId) {
+    public ClassStudent addStudent(Long classStudentId, Long studentId) {
       ClassStudent classStudent = findById(classStudentId);
       Student student = studentService.findById(studentId);
-
 
         if (classStudent.getStudents().contains(student)) {
             throw new StudentAlreadyEnrolledException(student.getId(), classStudentId);
           } else{
+            student.setClassStudent(classStudent);
             classStudent.getStudents().add(student);
             return repository.save(classStudent);
           }
 
     }
+
+
   
-  public ClassStudent update(Long id, ClassStudent classStudentDetails) {
+    public ClassStudent update(Long id, classStudentDetails classStudentDetails) {
       ClassStudent classStudent = findById(id);
 
       classStudent.setTime(classStudentDetails.getTime());
       classStudent.setCostMonthly(classStudentDetails.getCostMonthly());
       classStudent.setDaysWeek(classStudentDetails.getDaysWeek());
       classStudent.setModality(classStudentDetails.getModality());
-      classStudent.setDenomination(classStudentDetails.getModality() + " - " + classStudentDetails.getTeacher().getName());
+      classStudent.setDenomination(classStudentDetails.getModality() + " - " + classStudentDetails.getDaysWeek() + " - " + classStudentDetails.getTime());
 
       return repository.save(classStudent);
   }
@@ -98,6 +104,13 @@ public class ClassStudentService {
   public void delete(long id) {
       ClassStudent classStudent = findById(id);
       Objects.requireNonNull(classStudent, "ClassStudent must not be null");
+      ;
+     
+      for (Student student : classStudent.getStudents()) {
+          student.setClassStudent(null);
+      }
+      classStudent.setTeacher(null);
+      classStudent.setStudents(null);
       repository.delete(classStudent);
   }
 

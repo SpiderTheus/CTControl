@@ -8,7 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
@@ -24,7 +24,8 @@ public class ClassStudent implements java.io.Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     private double time;
@@ -38,10 +39,8 @@ public class ClassStudent implements java.io.Serializable {
     @OneToMany(mappedBy = "classStudent", fetch = FetchType.LAZY)
     private Set<Student> students;
 
-    @ManyToOne
-    private MonthlyFee monthlyFee;
+    private String denomination;
 
-     private String denomination;
 
     public ClassStudent() {
     }

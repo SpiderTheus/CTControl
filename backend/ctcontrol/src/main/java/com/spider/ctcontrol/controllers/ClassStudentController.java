@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +18,10 @@ import com.spider.ctcontrol.entities.ClassStudent;
 
 import com.spider.ctcontrol.entities.dtos.ClassStudentDto;
 import com.spider.ctcontrol.entities.dtos.StudentDto;
+import com.spider.ctcontrol.entities.dtos.classStudentDetails;
+
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping(value = "/class-students")
@@ -56,10 +60,22 @@ public class ClassStudentController {
         return ResponseEntity.ok(classStudent);
     }
 
-    @PatchMapping(value = "/{classStudentId}/student/{studentId}")
+    @PutMapping("/{idClassStudent}")
+    public ResponseEntity<ClassStudent> update(@PathVariable Long idClassStudent, @RequestBody classStudentDetails classStudentDetails) {
+        ClassStudent classStudent = service.update(idClassStudent, classStudentDetails);
+        return ResponseEntity.ok(classStudent);
+    }
+
+    @PatchMapping(value = "/{classStudentId}/add-student/{studentId}")
     public ResponseEntity<ClassStudent> addStudent(@PathVariable Long classStudentId, @PathVariable Long studentId) {
         ClassStudent classStudent = service.addStudent(classStudentId, studentId);
         return ResponseEntity.ok(classStudent);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
