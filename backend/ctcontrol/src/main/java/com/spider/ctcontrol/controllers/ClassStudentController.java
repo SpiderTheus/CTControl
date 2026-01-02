@@ -72,6 +72,14 @@ public class ClassStudentController {
         return ResponseEntity.ok(classStudent);
     }
 
+    @PatchMapping(value = "/{classStudentId}/remove-student/{studentId}")
+    public ResponseEntity<ClassStudent> removeStudent(@PathVariable Long classStudentId, @PathVariable Long studentId){
+        ClassStudent classStudent = service.removeStudent(classStudentId, studentId);
+        return ResponseEntity.ok(classStudent);
+    }
+
+
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);

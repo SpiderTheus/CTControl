@@ -16,6 +16,8 @@ import com.spider.ctcontrol.repositories.ClassStudentRepository;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 import com.spider.ctcontrol.services.exceptions.StudentAlreadyEnrolledException;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ClassStudentService {
     
@@ -95,7 +97,8 @@ public class ClassStudentService {
       return repository.save(classStudent);
   }
 
-  public ClassStudent deleteStudent(Long classStudentId, Long studentId) {
+  @Transactional
+  public ClassStudent removeStudent(Long classStudentId, Long studentId) {
       ClassStudent classStudent = findById(classStudentId);
       classStudent.getStudents().removeIf(student -> Objects.equals(student.getId(), studentId));
       return repository.save(classStudent);

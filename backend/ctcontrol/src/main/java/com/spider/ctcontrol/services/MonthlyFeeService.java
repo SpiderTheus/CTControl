@@ -46,25 +46,31 @@ public class MonthlyFeeService {
     }
 
     @Transactional
-    public MonthlyFee enrollStudent(MonthlyFeeDto dto, Long studentId) {
-        Student student = studentService.findById(studentId);
+    public MonthlyFee createMonthlyFee(Student student, MonthlyFeeDto monthlyFeeDto){
+        MonthlyFee monthly = new MonthlyFee(
+            student,
+            PaymentStatus.valueOf(monthlyFeeDto.getStatus()),
+            monthlyFeeDto.getAmount(),
+            monthlyFeeDto.getDueDay(),
+            null
+        );
 
-        MonthlyFee monthly = student.getMonthlyFee();
+        monthly.setStudent(student);
+        student.setMonthlyFee(monthly);
 
-        if (monthly == null) {
-            monthly = new MonthlyFee();
-            monthly.setStudent(student);
-            student.setMonthlyFee(monthly);
-        }
-
-        monthly = update(studentId, monthly);
-
-        monthly.setLastPayment(null);
-
-        return repository.save(monthly);
+        return insert(monthly);
     }
 
-   
+    @Transactional
+    public MonthlyFee enrollStudent(MonthlyFeeDto monthlyFeeDto, Long studentId) {
+        Student student = studentService.findById(studentId);
+        MonthlyFee monthly = student.getMonthlyFee();
+
+        if (monthly != null) 
+           return update(monthly.getId(), monthly);
+        
+        return createMonthlyFee(student, monthlyFeeDto);
+    }
 
     public MonthlyFee update(long id, MonthlyFee monthlyFeeDetails) {
         MonthlyFee monthlyFee = findById(id);
