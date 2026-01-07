@@ -18,7 +18,7 @@ import com.spider.ctcontrol.entities.ClassStudent;
 
 import com.spider.ctcontrol.entities.dtos.ClassStudentDto;
 import com.spider.ctcontrol.entities.dtos.StudentDto;
-import com.spider.ctcontrol.entities.dtos.classStudentDetails;
+import com.spider.ctcontrol.entities.dtos.ClassStudentDetails;
 
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -42,7 +42,7 @@ public class ClassStudentController {
 
   @GetMapping(value = "/students/{id}")
   public ResponseEntity<Set<StudentDto>> findAllStudents(@PathVariable Long id) {    
-      Set<StudentDto> students  = service.findAllStudents(id);
+      Set<StudentDto> students  = service.findAllStudentsDto(id);
       return ResponseEntity.ok().body(students); 
   }
 
@@ -61,14 +61,14 @@ public class ClassStudentController {
     }
 
     @PutMapping("/{idClassStudent}")
-    public ResponseEntity<ClassStudent> update(@PathVariable Long idClassStudent, @RequestBody classStudentDetails classStudentDetails) {
+    public ResponseEntity<ClassStudent> update(@PathVariable Long idClassStudent, @RequestBody ClassStudentDetails classStudentDetails) {
         ClassStudent classStudent = service.update(idClassStudent, classStudentDetails);
         return ResponseEntity.ok(classStudent);
     }
 
     @PatchMapping(value = "/{classStudentId}/add-student/{studentId}")
     public ResponseEntity<ClassStudent> addStudent(@PathVariable Long classStudentId, @PathVariable Long studentId) {
-        ClassStudent classStudent = service.addStudent(classStudentId, studentId);
+        ClassStudent classStudent = service.addStudentInClassStudent(classStudentId, studentId);
         return ResponseEntity.ok(classStudent);
     }
 

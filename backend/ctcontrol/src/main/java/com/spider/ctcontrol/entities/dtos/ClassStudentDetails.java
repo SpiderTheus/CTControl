@@ -5,17 +5,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class classStudentDetails {
+public class ClassStudentDetails {
    
     private double time;
     private Double costMonthly;
     private String daysWeek;
     private String modality;
 
-    public classStudentDetails() {
+    public ClassStudentDetails() {
     }
 
-    public classStudentDetails(double time, Double costMonthly, String daysWeek,
+    public ClassStudentDetails(double time, Double costMonthly, String daysWeek,
             String modality) {
   
         this.time = time;

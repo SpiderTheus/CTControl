@@ -11,6 +11,7 @@ import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.dtos.MonthlyFeeDto;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.MonthlyFeeRepository;
+import com.spider.ctcontrol.services.exceptions.InsertException;
 import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 
@@ -41,7 +42,7 @@ public class MonthlyFeeService {
             Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
             return repository.save(monthlyFee);
         } catch (Exception e) {
-            throw new RuntimeException("Error inserting monthly fee: " + e.getMessage());
+            throw new InsertException("Monthly fee");
         } 
     }
 
@@ -66,7 +67,7 @@ public class MonthlyFeeService {
         Student student = studentService.findById(studentId);
         MonthlyFee monthly = student.getMonthlyFee();
 
-        if (monthly != null) 
+        if (student.isMonthlyFee(monthly)) 
            return update(monthly.getId(), monthly);
         
         return createMonthlyFee(student, monthlyFeeDto);
@@ -85,7 +86,7 @@ public class MonthlyFeeService {
     public MonthlyFee payMonthlyFee(long id) {
         MonthlyFee monthlyFee = findById(id);
 
-        if (monthlyFee.getStatus() != PaymentStatus.PAID) {
+        if (monthlyFee.isPendingOverdue()) {
              monthlyFee.setStatus(PaymentStatus.PAID);
              monthlyFee.setLastPayment(LocalDate.now());
         } else {
@@ -99,13 +100,11 @@ public class MonthlyFeeService {
     @Transactional
     public void delete(long id) {
         MonthlyFee monthlyFee = findById(id);
-        Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
-    
-        if (monthlyFee.getStudent() != null) {
+            
+        if (monthlyFee.isStudent()) {
             monthlyFee.getStudent().setMonthlyFee(null);
             monthlyFee.setStudent(null);
         }
-        
         repository.delete(monthlyFee);
     }
         
@@ -143,16 +142,14 @@ public class MonthlyFeeService {
 
          List<MonthlyFee> lateFees = repository.findLates(deadline.getDayOfMonth());
      
-          lateFees.forEach(fee -> {
-                fee.setStatus(PaymentStatus.OVERDUE);   
-          });
+          lateFees.forEach(fee -> fee.setStatus(PaymentStatus.OVERDUE));
           repository.saveAll(lateFees);
     }
 
 
     public void notifyLatePayment(Long id) {
         MonthlyFee monthlyFee = findById(id);
-        if (monthlyFee.getStatus() == PaymentStatus.OVERDUE) {
+        if (!monthlyFee.isPendingOverdue()) {
             // Logic to send notification (whatsapp) to the student
             System.out.println("Notification sent to student with ID: " + monthlyFee.getStudent().getId() + " about late payment.");
         } else {

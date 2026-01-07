@@ -56,4 +56,19 @@ public class MonthlyFee implements java.io.Serializable{
         this.dueDay = dueDay; 
         this.lastPayment = lastPayment;
     }
+
+
+    public boolean isPendingOverdue(){
+        if (this.status != PaymentStatus.PAID) 
+            return true;
+         else return false;
+        
+    }
+
+    public boolean isStudent(){
+        if (this.status != null)
+            return true;
+        else return false;
+    }
+
 }

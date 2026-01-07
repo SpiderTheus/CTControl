@@ -16,7 +16,7 @@ public class MonthlyFeeDto {
     private String status;
     private Double amount;
     private int dueDay;
-
+    private String lastPayment;
 
     public MonthlyFeeDto() {
     }
@@ -28,6 +28,8 @@ public class MonthlyFeeDto {
         this.status = monthlyFee.getStatus().name();
         this.amount = monthlyFee.getAmount();
         this.dueDay = monthlyFee.getDueDay();
+        this.lastPayment = String.valueOf(monthlyFee.getLastPayment());
+
     }
 
     public String nameStudent(Student student){

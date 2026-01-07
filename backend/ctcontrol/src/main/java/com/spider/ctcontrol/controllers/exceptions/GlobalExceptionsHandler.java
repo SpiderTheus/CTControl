@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.spider.ctcontrol.services.exceptions.DeleteEntityException;
+import com.spider.ctcontrol.services.exceptions.EnrollingException;
+import com.spider.ctcontrol.services.exceptions.InsertException;
 import com.spider.ctcontrol.services.exceptions.NoResultsFoundException;
 import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
@@ -48,12 +51,39 @@ public class GlobalExceptionsHandler {
 	}
 
 	@ExceptionHandler(StudentAlreadyEnrolledException.class)
-	public ResponseEntity<ReplyMessage> studentAlreadyEnrolledException(Throwable e) {
-		var mensage = e.getMessage();
+	public ResponseEntity<ReplyMessage> studentAlreadyEnrolledException(StudentAlreadyEnrolledException e, HttpServletRequest request) {
+		var mensage = "Student already enrolled";
 		HttpStatus status = HttpStatus.CONFLICT;
 
 		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
 
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(InsertException.class)
+	public ResponseEntity<ReplyMessage> insertException(InsertException e, HttpServletRequest request) {
+		var mensage = "Error inserting data";
+		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
+
+		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(EnrollingException.class)
+	public ResponseEntity<ReplyMessage> enrollingException(EnrollingException e, HttpServletRequest request) {
+		var mensage = "Error enrolling student";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+
+		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(DeleteEntityException.class)
+	public ResponseEntity<ReplyMessage> deleteEntityException(DeleteEntityException e, HttpServletRequest request) {
+		var mensage = "Error deleting entity";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+
+		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
 		return ResponseEntity.status(status).body(err);
 	}
 }

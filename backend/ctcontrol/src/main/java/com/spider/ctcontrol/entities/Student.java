@@ -56,4 +56,8 @@ public class Student implements java.io.Serializable {
         this.cpf = cpf; 
     }
 
+    public boolean isMonthlyFee(MonthlyFee monthlyFee) {
+        return monthlyFee != null; 
+    }
+
 }
