@@ -21,7 +21,6 @@ import jakarta.transaction.Transactional;
 public class MonthlyFeeService {
 
     private final MonthlyFeeRepository repository;
-
     private final StudentService studentService;
 
     public MonthlyFeeService(MonthlyFeeRepository repository, StudentService studentService) {
@@ -37,13 +36,15 @@ public class MonthlyFeeService {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "Monthly fee, not found with "));
     }
 
-    public MonthlyFee insert(MonthlyFee monthlyFee) {
-        try {
-            Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
-            return repository.save(monthlyFee);
-        } catch (Exception e) {
-            throw new InsertException("Monthly fee");
-        } 
+    @Transactional
+    public MonthlyFee enrollStudent(MonthlyFeeDto monthlyFeeDto, Long studentId) {
+        Student student = studentService.findById(studentId);
+        MonthlyFee monthly = student.getMonthlyFee();
+
+        if (student.isMonthlyFee(monthly)) 
+           return update(monthly.getId(), monthly);
+        
+        return createMonthlyFee(student, monthlyFeeDto);
     }
 
     @Transactional
@@ -62,17 +63,7 @@ public class MonthlyFeeService {
         return insert(monthly);
     }
 
-    @Transactional
-    public MonthlyFee enrollStudent(MonthlyFeeDto monthlyFeeDto, Long studentId) {
-        Student student = studentService.findById(studentId);
-        MonthlyFee monthly = student.getMonthlyFee();
-
-        if (student.isMonthlyFee(monthly)) 
-           return update(monthly.getId(), monthly);
-        
-        return createMonthlyFee(student, monthlyFeeDto);
-    }
-
+   
     public MonthlyFee update(long id, MonthlyFee monthlyFeeDetails) {
         MonthlyFee monthlyFee = findById(id);
         monthlyFee.setStatus(monthlyFeeDetails.getStatus());
@@ -96,30 +87,35 @@ public class MonthlyFeeService {
         return insert(monthlyFee);
     }
 
+    public MonthlyFee insert(MonthlyFee monthlyFee) {
+        try {
+            Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
+
+            return repository.save(monthlyFee);
+        } catch (Exception e) {
+            throw new InsertException("Monthly fee");
+        } 
+    }
 
     @Transactional
     public void delete(long id) {
         MonthlyFee monthlyFee = findById(id);
             
         if (monthlyFee.isStudent()) {
-            monthlyFee.getStudent().setMonthlyFee(null);
-            monthlyFee.setStudent(null);
+           monthlyFee = unlinkStudent(monthlyFee);
         }
+        
         repository.delete(monthlyFee);
     }
-        
-  
-    public boolean isPaidMonth(MonthlyFee fee) {
-        if(fee.getLastPayment() == null) return false;
 
-        LocalDate lastPayment = fee.getLastPayment();
-        LocalDate today = LocalDate.now();
+    public MonthlyFee unlinkStudent(MonthlyFee monthlyFee) {
 
-        return lastPayment.getMonth() == today.getMonth() && lastPayment.getYear() == today.getYear();
+        monthlyFee.getStudent().setMonthlyFee(null);
+        monthlyFee.setStudent(null);
 
+        return repository.save(monthlyFee);
     }
-
-
+        
     @Transactional
     public void statusPending() {
         LocalDate today = LocalDate.now();
@@ -136,16 +132,26 @@ public class MonthlyFeeService {
         
     }   
 
-    @Transactional
-    public void statusOverdue() {
-       LocalDate deadline = LocalDate.now().minusDays(3);
+    public boolean isPaidMonth(MonthlyFee fee) {
+        if(fee.getLastPayment() == null) return false;
 
-         List<MonthlyFee> lateFees = repository.findLates(deadline.getDayOfMonth());
-     
-          lateFees.forEach(fee -> fee.setStatus(PaymentStatus.OVERDUE));
-          repository.saveAll(lateFees);
+        LocalDate lastPayment = fee.getLastPayment();
+        LocalDate today = LocalDate.now();
+
+        return lastPayment.getMonth() == today.getMonth() && lastPayment.getYear() == today.getYear();
+
     }
 
+    @Transactional
+    public void statusOverdue() {
+        LocalDate deadline = LocalDate.now().minusDays(3);
+
+        List<MonthlyFee> lateFees = repository.findLates(deadline.getDayOfMonth());
+     
+        lateFees.forEach(fee -> fee.setStatus(PaymentStatus.OVERDUE));
+        
+        repository.saveAll(lateFees);
+    }
 
     public void notifyLatePayment(Long id) {
         MonthlyFee monthlyFee = findById(id);
@@ -156,7 +162,4 @@ public class MonthlyFeeService {
             throw new PaymentAlreadyException("Monthly fee is not overdue for student with ID: " + monthlyFee.getStudent().getId());
         }   
     }
-
-   
-
 }

@@ -42,7 +42,7 @@ public class StudentController {
 
     @GetMapping(value = "/search/{name}")
     public ResponseEntity<List<StudentDto>> findByName(@PathVariable String name) {
-        List<StudentDto> students = service.findByName(name);
+        List<StudentDto> students = service.studenSearchResults(name);
         return ResponseEntity.ok().body(students);
     }
 
@@ -53,14 +53,14 @@ public class StudentController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StudentDto> update(@PathVariable Long id, @RequestBody StudentDto obj) {
+    public ResponseEntity<StudentDto> updateEntity(@PathVariable Long id, @RequestBody StudentDto obj) {
         Student updatedStudent = service.update(id, obj);
         StudentDto studentDto = new StudentDto(updatedStudent);
         return ResponseEntity.ok(studentDto);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteEntity(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build(); 
     }

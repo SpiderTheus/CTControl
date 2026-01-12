@@ -30,8 +30,8 @@ public class MonthlyFeeController {
 
     @GetMapping
     public ResponseEntity<List<MonthlyFeeDto>> findAll() {    
-        List<MonthlyFeeDto> MonthlyFees = service.findAll().stream().map(MonthlyFeeDto::new).toList();
-        return ResponseEntity.ok().body(MonthlyFees);
+        List<MonthlyFeeDto> monthlyFeesDto = service.findAll().stream().map(MonthlyFeeDto::new).toList();
+        return ResponseEntity.ok().body(monthlyFeesDto);
     }
 
     @GetMapping(value = "/{id}")
@@ -43,9 +43,9 @@ public class MonthlyFeeController {
 
     @PostMapping(value = "/enroll/{studentId}")
     public ResponseEntity<MonthlyFee> enrolStudent(@PathVariable Long studentId, @RequestBody MonthlyFeeDto monthlyFeeDto) {
-        MonthlyFee MonthlyFee = service.enrollStudent(monthlyFeeDto, studentId);
+        MonthlyFee monthlyFee = service.enrollStudent(monthlyFeeDto, studentId);
 
-        return ResponseEntity.ok(MonthlyFee);
+        return ResponseEntity.ok(monthlyFee);
     }
 
     @PutMapping(value = "/{id}")

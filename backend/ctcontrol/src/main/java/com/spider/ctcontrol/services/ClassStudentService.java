@@ -38,16 +38,9 @@ public class ClassStudentService {
   }
 
     public List<ClassStudentDto> findAll() {
-    
-      return repository.findAll().stream()
+        return repository.findAll().stream()
               .map(ClassStudentDto::new)
               .toList();
-  }
-
-    public Set<Student> findAllStudents(Long classStudentId) {
-
-        findById(classStudentId);
-        return repository.findStudentsById(classStudentId);
   }
 
     public Set<StudentDto> findAllStudentsDto(Long classStudentId) {
@@ -62,22 +55,29 @@ public class ClassStudentService {
         return studentDtos;
   }
 
+    public Set<Student> findAllStudents(Long classStudentId) {
+        findById(classStudentId);
+        return repository.findStudentsById(classStudentId);
+  }
+
     public ClassStudent findById(long id) {
       return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "ClassStudent, not found with "));
   } 
 
-    public ClassStudent insertClassStudent(ClassStudent classStudent){
-        Objects.requireNonNull(classStudent, "ClassStudent must not be null");
-        return repository.save(classStudent);
-  }
-
     public ClassStudent insert(ClassStudent classStudent, Long teacherId) {
         try {
             classStudent.setTeacher(teacherService.findById(teacherId));
+
             return insertClassStudent(classStudent);
         } catch (Exception e) {
             throw new InsertException("ClassStudent");
         } 
+    }
+
+    @Transactional
+    public ClassStudent addStudentInClassStudent(Long classStudentId, Long studentId) {
+       
+        return addStudent(classStudentId, studentId);   
     }
 
     @Transactional
@@ -96,13 +96,6 @@ public class ClassStudentService {
           }
     }
 
-    @Transactional
-    public ClassStudent addStudentInClassStudent(Long classStudentId, Long studentId) {
-       
-        return addStudent(classStudentId, studentId);
-        
-    }
-
     public ClassStudent update(Long id, ClassStudentDetails classStudentDetails) {
       ClassStudent classStudent = findById(id);
 
@@ -113,10 +106,15 @@ public class ClassStudentService {
       classStudent.setDenomination(classStudentDetails.getModality() + " - " + classStudentDetails.getDaysWeek() + " - " + classStudentDetails.getTime());
 
       return insertClassStudent(classStudent);
-  }
+    } 
 
-  @Transactional
-  public ClassStudent removeStudentInSet(Long classStudentId, Long studentId) {
+    @Transactional
+    public ClassStudent removeStudent(Long classStudentId, Long studentId) {
+        return removeStudentInSet(classStudentId, studentId);
+    }
+  
+    @Transactional
+    public ClassStudent removeStudentInSet(Long classStudentId, Long studentId) {
         ClassStudent classStudent = findById(classStudentId);
         Set<Student> students = classStudent.getStudents();
         Student student = studentService.findById(studentId);
@@ -126,14 +124,23 @@ public class ClassStudentService {
         classStudent.setStudents(students);
 
         return insertClassStudent(classStudent);
-  }
+    }
 
-  @Transactional
-  public ClassStudent removeStudent(Long classStudentId, Long studentId) {
-  
-    return removeStudentInSet(classStudentId, studentId);
-    
-  }
+    public ClassStudent insertClassStudent(ClassStudent classStudent){
+        Objects.requireNonNull(classStudent, "ClassStudent must not be null");
+        return repository.save(classStudent);
+    }
+
+    public void delete(Long classStudentId){ 
+        try {
+            ClassStudent classStudent = unlinkStudentAndTeacher(classStudentId);
+            Objects.requireNonNull(classStudent, "ClassStudent must not be null");
+
+            repository.delete(classStudent);
+        } catch (Exception e) {
+         throw new DeleteEntityException("Error deleting classStudent");
+     }
+    }
 
   public ClassStudent unlinkStudentAndTeacher(Long classStudentId){
      ClassStudent classStudent = findById(classStudentId);
@@ -141,22 +148,12 @@ public class ClassStudentService {
       for (Student student : classStudent.getStudents()) {
           student.setClassStudent(null);
       }
+      
       classStudent.setTeacher(null);
       classStudent.setStudents(null);
+
       return classStudent;
   }
-
-  public void delete(Long classStudentId){ 
-     try {
-        ClassStudent classStudent = unlinkStudentAndTeacher(classStudentId);
-        Objects.requireNonNull(classStudent, "ClassStudent must not be null");
-
-        repository.delete(classStudent);
-     } catch (Exception e) {
-         throw new DeleteEntityException("Error deleting classStudent");
-     }
-    }
-   
 }
 
 

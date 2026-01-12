@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.spider.ctcontrol.services.exceptions.DeleteEntityException;
 import com.spider.ctcontrol.services.exceptions.EnrollingException;
+import com.spider.ctcontrol.services.exceptions.ErrorSearchingException;
 import com.spider.ctcontrol.services.exceptions.InsertException;
 import com.spider.ctcontrol.services.exceptions.NoResultsFoundException;
 import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
@@ -83,6 +84,15 @@ public class GlobalExceptionsHandler {
 		var mensage = "Error deleting entity";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 
+		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ErrorSearchingException.class)
+	public ResponseEntity<ReplyMessage> errorSearchingException(ErrorSearchingException e, HttpServletRequest request) {
+		var mensage = "Error during search operation";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		
 		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
 		return ResponseEntity.status(status).body(err);
 	}
