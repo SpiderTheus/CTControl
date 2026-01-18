@@ -67,14 +67,14 @@ public class ClassStudentController {
     }
 
     @PatchMapping(value = "/{classStudentId}/add-student/{studentId}")
-    public ResponseEntity<ClassStudent> addStudent(@PathVariable Long classStudentId, @PathVariable Long studentId) {
-        ClassStudent classStudent = service.addStudentInClassStudent(classStudentId, studentId);
-        return ResponseEntity.ok(classStudent);
+    public ResponseEntity<ClassStudentDto> addStudent(@PathVariable Long classStudentId, @PathVariable Long studentId) {
+        ClassStudentDto classStudentDto = service.addStudentInClassStudent(classStudentId, studentId);
+        return ResponseEntity.ok(classStudentDto);
     }
 
     @PatchMapping(value = "/{classStudentId}/remove-student/{studentId}")
-    public ResponseEntity<ClassStudent> removeStudent(@PathVariable Long classStudentId, @PathVariable Long studentId){
-        ClassStudent classStudent = service.removeStudent(classStudentId, studentId);
+    public ResponseEntity<ClassStudentDto> removeStudent(@PathVariable Long classStudentId, @PathVariable Long studentId){
+        ClassStudentDto classStudent = service.removeStudent(classStudentId, studentId);
         return ResponseEntity.ok(classStudent);
     }
 

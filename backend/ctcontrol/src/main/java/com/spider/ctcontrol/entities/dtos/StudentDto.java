@@ -1,9 +1,11 @@
 package com.spider.ctcontrol.entities.dtos;
 
 
+
 import java.util.Optional;
 
 import com.spider.ctcontrol.entities.ClassStudent;
+import com.spider.ctcontrol.entities.MonthlyFee;
 import com.spider.ctcontrol.entities.Student;
 
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
@@ -19,6 +21,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class StudentDto {
 
+    private Long id;
     private String name;
     private String email;
     private String phone;
@@ -29,12 +32,11 @@ public class StudentDto {
     }
 
     public StudentDto(Student student){
-
+        this.id = student.getId();
         this.name = student.getName();
         this.email = student.getEmail();
         this.phone = student.getPhone();
-        this.monthlyFee = Optional.ofNullable(student.getMonthlyFee()).map(fee -> fee.getStatus()).orElse(null);
+        this.monthlyFee = Optional.ofNullable(student.getMonthlyFee()).map(MonthlyFee::getStatus).orElse(PaymentStatus.CANCELLED);
         this.classStudent = Optional.ofNullable(student.getClassStudent()).map(ClassStudent::getDenomination).orElse(null);
     }
-
 }

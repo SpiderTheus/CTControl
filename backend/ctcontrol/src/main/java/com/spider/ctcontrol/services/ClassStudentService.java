@@ -75,9 +75,12 @@ public class ClassStudentService {
     }
 
     @Transactional
-    public ClassStudent addStudentInClassStudent(Long classStudentId, Long studentId) {
-       
-        return addStudent(classStudentId, studentId);   
+    public ClassStudentDto addStudentInClassStudent(Long classStudentId, Long studentId) {
+       try {
+        return new ClassStudentDto(addStudent(classStudentId, studentId));}
+        catch (Exception e) {
+            throw new InsertException("Error adding student with ID: " + studentId + " to classStudent with ID: " + classStudentId + ". " + e.getMessage());
+        }
     }
 
     @Transactional
@@ -109,19 +112,28 @@ public class ClassStudentService {
     } 
 
     @Transactional
-    public ClassStudent removeStudent(Long classStudentId, Long studentId) {
-        return removeStudentInSet(classStudentId, studentId);
+    public ClassStudentDto removeStudent(Long classStudentId, Long studentId) {
+        try {
+            return new ClassStudentDto(removeStudentInSet(classStudentId, studentId));
+        } catch (Exception e) {
+            throw new DeleteEntityException("Error removing student with ID: " + studentId + " from classStudent with ID: " + classStudentId + ". " + e.getMessage());
+        }
     }
   
     @Transactional
     public ClassStudent removeStudentInSet(Long classStudentId, Long studentId) {
         ClassStudent classStudent = findById(classStudentId);
-        Set<Student> students = classStudent.getStudents();
         Student student = studentService.findById(studentId);
+        
+        classStudent.getStudents().remove(student);
 
-        students.remove(student);
-        student.setClassStudent(null);
-        classStudent.setStudents(students);
+        return unlinkStudentFromClassStudent(student, classStudent);
+    }
+
+    @Transactional
+    public ClassStudent unlinkStudentFromClassStudent(Student student, ClassStudent classStudent) {
+       
+        studentService.unlinkStudent(student);
 
         return insertClassStudent(classStudent);
     }

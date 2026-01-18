@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.dtos.StudentDto;
-
+import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.StudentRepository;
 import com.spider.ctcontrol.services.exceptions.DeleteEntityException;
 import com.spider.ctcontrol.services.exceptions.ErrorSearchingException;
@@ -70,14 +70,6 @@ public class StudentService {
         return insert(student);
     }
 
-    public Student insert(Student student) {
-        try {
-            Objects.requireNonNull(student, "Student must not be null");
-            return repository.save(student);
-        } catch (Exception e) {
-            throw new InsertException("Error inserting student: " + e.getMessage());
-        } 
-    }
 
     public void delete(long id) {
         try {
@@ -94,9 +86,20 @@ public class StudentService {
     public Student unlinkStudent(Student student) {
 
         student.getClassStudent().getStudents().remove(student);
+        student.getMonthlyFee().setStatus(PaymentStatus.CANCELLED);
         student.setMonthlyFee(null);
         student.setClassStudent(null);
-
-        return repository.save(student);
+        
+        return insert(student);
     }   
+
+
+    public Student insert(Student student) {
+        try {
+            Objects.requireNonNull(student, "Student must not be null");
+            return repository.save(student);
+        } catch (Exception e) {
+            throw new InsertException("Error inserting student: " + e.getMessage());
+        } 
+    }
 }
