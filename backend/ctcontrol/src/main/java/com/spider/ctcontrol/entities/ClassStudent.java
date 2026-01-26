@@ -1,5 +1,6 @@
 package com.spider.ctcontrol.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -37,7 +38,7 @@ public class ClassStudent implements java.io.Serializable {
     private String modality;
 
     @OneToMany(mappedBy = "classStudent", fetch = FetchType.LAZY)
-    private Set<Student> students;
+    private Set<Student> students =  new HashSet<>();
 
     private String denomination;
 
@@ -51,5 +52,14 @@ public class ClassStudent implements java.io.Serializable {
         this.daysWeek = daysWeek;
         this.modality = modality;
         this.denomination = modality + " - " + daysWeek + " - " + time + "h";
+    }
+
+    public void addStudent(Student student) {
+        this.students.add(student);
+        student.setClassStudent(this);
+    }
+    public void removeStudent(Student student) {
+        this.students.remove(student);
+        student.setClassStudent(null);
     }
 }
