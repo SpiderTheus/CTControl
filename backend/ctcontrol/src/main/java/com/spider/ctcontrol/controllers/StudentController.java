@@ -42,7 +42,7 @@ public class StudentController {
 
     @GetMapping(value = "/search/{name}")
     public ResponseEntity<List<StudentDto>> findByName(@PathVariable String name) {
-        List<StudentDto> students = service.studenSearchResults(name);
+        List<StudentDto> students = service.studentSearchResults(name);
         return ResponseEntity.ok().body(students);
     }
 

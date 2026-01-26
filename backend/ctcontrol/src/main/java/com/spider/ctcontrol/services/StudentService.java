@@ -28,7 +28,7 @@ public class StudentService {
         return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id, "Student not found with "));
     }
 
-    public List<StudentDto> studenSearchResults (String name) {
+    public List<StudentDto> studentSearchResults (String name) {
         try {
 
             List<Student> students = repository.findByNameContainingIgnoreCase(name);
@@ -54,7 +54,7 @@ public class StudentService {
     }
 
     public boolean noResultsFound(List<Student> students) {
-        return !students.isEmpty();
+        return students.isEmpty();
     }
 
     public List<StudentDto> findAll() {
