@@ -39,24 +39,17 @@ public class MonthlyFeeService {
     @Transactional
     public MonthlyFee enrollStudent(MonthlyFeeDto monthlyFeeDto, Long studentId) {
         Student student = studentService.findById(studentId);
-        MonthlyFee monthly = student.getMonthlyFee();
+        MonthlyFee monthly = new MonthlyFee(monthlyFeeDto);
 
-        if (student.isMonthlyFee(monthly)) 
+        if (!student.isMonthlyFee(monthly)) 
            return update(monthly.getId(), monthly);
         
-        return createMonthlyFee(student, monthlyFeeDto);
+        return linkMonthlyFee(student, monthly);
     }
 
     @Transactional
-    public MonthlyFee createMonthlyFee(Student student, MonthlyFeeDto monthlyFeeDto){
-        MonthlyFee monthly = new MonthlyFee(
-            student,
-            PaymentStatus.valueOf(monthlyFeeDto.getStatus()),
-            monthlyFeeDto.getAmount(),
-            monthlyFeeDto.getDueDay(),
-            null
-        );
-
+    public MonthlyFee linkMonthlyFee(Student student, MonthlyFee monthly){
+     
         monthly.setStudent(student);
         student.setMonthlyFee(monthly);
 

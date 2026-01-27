@@ -79,7 +79,7 @@ class StudentServiceTest {
 
 		existingStudent.setId(studentId);
 		existingStudent.setName("Old Name");
-		 existingStudent.setEmail("old@example.com");
+		existingStudent.setEmail("old@example.com");
 		existingStudent.setPhone("123456789");
 
 		StudentDto studentDetails = new StudentDto(new Student("New Name", "new@example.com", "987654321", null, null, null));

@@ -3,6 +3,7 @@ package com.spider.ctcontrol.entities;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spider.ctcontrol.entities.dtos.MonthlyFeeDto;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 
 import jakarta.persistence.Entity;
@@ -55,6 +56,13 @@ public class MonthlyFee implements java.io.Serializable{
         this.amount = amount;
         this.dueDay = dueDay; 
         this.lastPayment = lastPayment;
+    }
+
+    public MonthlyFee(MonthlyFeeDto monthlyFeeDto) {
+        this.status = PaymentStatus.valueOf(monthlyFeeDto.getStatus());
+        this.amount = monthlyFeeDto.getAmount();
+        this.dueDay = monthlyFeeDto.getDueDay();
+        this.lastPayment = null;
     }
 
 
