@@ -6,6 +6,7 @@ import com.spider.ctcontrol.entities.Student;
 import com.spider.ctcontrol.entities.dtos.StudentDto;
 import com.spider.ctcontrol.repositories.StudentRepository;
 import com.spider.ctcontrol.services.exceptions.NoResultsFoundException;
+import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,16 @@ class StudentServiceTest {
 		verify(studentRepository, times(1)).save(student);
 	}
 
+	@Test
+	void notFindById() {
+		Long studentId = 1L;
+
+		when(studentRepository.findById(studentId)).thenThrow(new ResourceNotFoundException(studentId, "Student not found"));
+
+		assertThrows(ResourceNotFoundException.class, () -> studentService.findById(studentId));
+
+		verify(studentRepository, times(1)).findById(studentId);
+	}
 
 
 }

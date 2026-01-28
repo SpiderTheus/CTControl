@@ -55,4 +55,41 @@ class MonthlyFeeServiceTest {
 
 		verify(studentService).findById(studentId);
 	}
+
+	@Test
+	void enrollmentUpdateMonthlyFee() {
+		Long studentId = 1L;
+
+		MonthlyFee existingMonthlyFee = new MonthlyFee();
+		existingMonthlyFee.setId(1L);
+		existingMonthlyFee.setAmount(100.0);
+		existingMonthlyFee.setDueDay(15);
+		existingMonthlyFee.setStatus(PaymentStatus.CANCELLED);
+
+		Student student = new Student();
+		student.setId(studentId);
+		student.setName("John Doe");
+		student.setMonthlyFee(existingMonthlyFee);
+
+		when(studentService.insert(student)).thenReturn(student);
+		when(studentService.findById(studentId)).thenReturn(student);
+
+		when(monthlyFeeRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		MonthlyFeeDto monthlyFeeDto = new MonthlyFeeDto();
+		monthlyFeeDto.setAmount(150.0);
+		monthlyFeeDto.setDueDay(20);
+		monthlyFeeDto.setStatus(String.valueOf(PaymentStatus.PAID));
+
+		MonthlyFee actual = monthlyFeeService.enrollStudent(monthlyFeeDto, studentId);
+
+		assertNotNull(actual);
+		assertEquals(student, actual.getStudent());
+		assertEquals(150.0, actual.getAmount());
+		assertEquals(20, actual.getDueDay());
+		assertEquals(PaymentStatus.PAID, actual.getStatus());
+
+		verify(studentService).findById(studentId);
+	}
+
 }

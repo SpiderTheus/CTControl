@@ -51,4 +51,6 @@ class MonthlyFeeRepositoryTest {
 		List<MonthlyFee> actual = monthlyFeeRepository.findLates(10);
 		assertTrue(actual.isEmpty());
 	}
+
+
 }
