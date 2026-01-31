@@ -12,6 +12,7 @@ import com.spider.ctcontrol.entities.dtos.MonthlyFeeDto;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.MonthlyFeeRepository;
 import com.spider.ctcontrol.services.exceptions.InsertException;
+import com.spider.ctcontrol.services.exceptions.MonthlyFeeCancelledException;
 import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
 
@@ -69,12 +70,15 @@ public class MonthlyFeeService {
     @Transactional
     public MonthlyFee payMonthlyFee(long id) {
         MonthlyFee monthlyFee = findById(id);
+        
 
         if (monthlyFee.isPendingOverdue()) {
              monthlyFee.setStatus(PaymentStatus.PAID);
              monthlyFee.setLastPayment(LocalDate.now());
-        } else {
+        } else if(monthlyFee.getStatus() == PaymentStatus.PAID){
             throw new PaymentAlreadyException("Monthly fee is already marked as PAID for student with ID: " + id);
+        } else {
+            throw new MonthlyFeeCancelledException(id, "Payment error, monthly fee cancelled.");
         }
 
         return insert(monthlyFee);
@@ -97,7 +101,7 @@ public class MonthlyFeeService {
         if (monthlyFee.isStudent()) {
            monthlyFee = unlinkStudent(monthlyFee);
         }
-        
+        Objects.requireNonNull(monthlyFee, "Monthly fee must not be null");
         repository.delete(monthlyFee);
     }
 

@@ -67,16 +67,23 @@ public class MonthlyFee implements java.io.Serializable{
 
 
     public boolean isPendingOverdue(){
-        if (this.status != PaymentStatus.PAID) 
-            return true;
-         else return false;
-        
+        boolean owing = false;
+         if (this.status == PaymentStatus.PENDING) 
+            owing = true;
+         
+         if (this.status == PaymentStatus.OVERDUE) 
+            owing = true;
+         
+         return owing;
     }
 
     public boolean isStudent(){
-        if (this.status != null)
-            return true;
-        else return false;
+        boolean hasStudent = false;
+      
+        if (this.student != null) 
+            hasStudent = true;
+            
+        return hasStudent;
     }
 
 }

@@ -11,6 +11,7 @@ import com.spider.ctcontrol.services.exceptions.DeleteEntityException;
 import com.spider.ctcontrol.services.exceptions.EnrollingException;
 import com.spider.ctcontrol.services.exceptions.ErrorSearchingException;
 import com.spider.ctcontrol.services.exceptions.InsertException;
+import com.spider.ctcontrol.services.exceptions.MonthlyFeeCancelledException;
 import com.spider.ctcontrol.services.exceptions.NoResultsFoundException;
 import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 import com.spider.ctcontrol.services.exceptions.ResourceNotFoundException;
@@ -93,6 +94,15 @@ public class GlobalExceptionsHandler {
 		var mensage = "Error during search operation";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		
+		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(MonthlyFeeCancelledException.class)
+	public ResponseEntity<ReplyMessage> monthlyFeeCancelledException(MonthlyFeeCancelledException e, HttpServletRequest request) {
+		var mensage = e.getMessage();
+		HttpStatus status = HttpStatus.CONFLICT;
+
 		var err = new ReplyMessage(Instant.now(), status.value(), mensage);
 		return ResponseEntity.status(status).body(err);
 	}

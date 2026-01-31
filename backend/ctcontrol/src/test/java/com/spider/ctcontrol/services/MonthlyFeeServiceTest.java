@@ -6,6 +6,8 @@ import com.spider.ctcontrol.entities.dtos.MonthlyFeeDto;
 
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 import com.spider.ctcontrol.repositories.MonthlyFeeRepository;
+import com.spider.ctcontrol.services.exceptions.MonthlyFeeCancelledException;
+import com.spider.ctcontrol.services.exceptions.PaymentAlreadyException;
 
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
@@ -17,6 +19,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import java.time.LocalDate;
+import java.util.Optional;
 
 @SpringBootTest
 class MonthlyFeeServiceTest {
@@ -30,6 +34,7 @@ class MonthlyFeeServiceTest {
 	@Mock
 	private MonthlyFeeRepository monthlyFeeRepository;
 
+	@SuppressWarnings("null")
 	@Test
 	void enrollmentCreatingMonthlyFee() {
 		Long studentId = 1L;
@@ -56,6 +61,7 @@ class MonthlyFeeServiceTest {
 		verify(studentService).findById(studentId);
 	}
 
+	@SuppressWarnings("null")
 	@Test
 	void enrollmentUpdateMonthlyFee() {
 		Long studentId = 1L;
@@ -91,5 +97,164 @@ class MonthlyFeeServiceTest {
 
 		verify(studentService).findById(studentId);
 	}
+
+	@SuppressWarnings("null")
+	@Test
+	void linkMonthlyFee() {
+
+		Student student = new Student();
+		student.setId(1L);
+		student.setName("Jane Doe");
+
+		MonthlyFee monthlyFee = new MonthlyFee();
+		monthlyFee.setAmount(200.0);
+		monthlyFee.setDueDay(10);
+		monthlyFee.setStatus(PaymentStatus.PENDING);
+
+		when(monthlyFeeRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		MonthlyFee linkedMonthlyFee = monthlyFeeService.linkMonthlyFee(student, monthlyFee);
+
+		assertNotNull(linkedMonthlyFee);
+		assertEquals(student, linkedMonthlyFee.getStudent());
+		assertEquals(monthlyFee, student.getMonthlyFee());
+
+		verify(monthlyFeeRepository).save(monthlyFee);
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	void update() {
+
+		Long monthlyFeeId = 1L;
+
+		MonthlyFee existingMonthlyFee = new MonthlyFee();
+		existingMonthlyFee.setId(monthlyFeeId);
+		existingMonthlyFee.setAmount(100.0);
+		existingMonthlyFee.setDueDay(15);
+		existingMonthlyFee.setStatus(PaymentStatus.PENDING);
+
+		MonthlyFee updatedDetails = new MonthlyFee();
+		updatedDetails.setAmount(150.0);
+		updatedDetails.setDueDay(20);
+		updatedDetails.setStatus(PaymentStatus.PAID);
+
+		when(monthlyFeeRepository.findById(monthlyFeeId)).thenReturn(java.util.Optional.of(existingMonthlyFee));
+		when(monthlyFeeRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		MonthlyFee updatedMonthlyFee = monthlyFeeService.update(monthlyFeeId, updatedDetails);
+
+		assertNotNull(updatedMonthlyFee);
+		assertEquals(150.0, updatedMonthlyFee.getAmount());
+		assertEquals(20, updatedMonthlyFee.getDueDay());
+		assertEquals(PaymentStatus.PAID, updatedMonthlyFee.getStatus());
+
+		verify(monthlyFeeRepository).findById(monthlyFeeId);
+		verify(monthlyFeeRepository).save(existingMonthlyFee);
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	void updateNullKeepAttributes() {
+
+		Long monthlyFeeId = 1L;
+
+		MonthlyFee existingMonthlyFee = new MonthlyFee();
+		existingMonthlyFee.setId(monthlyFeeId);
+		existingMonthlyFee.setAmount(100.0);
+		existingMonthlyFee.setDueDay(15);
+		existingMonthlyFee.setStatus(PaymentStatus.PENDING);
+
+		MonthlyFee updatedDetails = new MonthlyFee();
+		updatedDetails.setStatus(PaymentStatus.PAID);
+
+		when(monthlyFeeRepository.findById(monthlyFeeId)).thenReturn(Optional.of(existingMonthlyFee));
+		when(monthlyFeeRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		MonthlyFee updatedMonthlyFee = monthlyFeeService.update(monthlyFeeId, updatedDetails);
+
+		assertNotNull(updatedMonthlyFee);
+		assertEquals(existingMonthlyFee.getAmount(), updatedMonthlyFee.getAmount());
+		assertEquals(existingMonthlyFee.getDueDay(), updatedMonthlyFee.getDueDay());
+		assertEquals(PaymentStatus.PAID, updatedMonthlyFee.getStatus());
+
+		verify(monthlyFeeRepository).findById(monthlyFeeId);
+		verify(monthlyFeeRepository).save(existingMonthlyFee);
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	void payMonthlyFee() {
+
+		Long monthlyFeeId = 1L;
+
+		MonthlyFee monthlyFee = new MonthlyFee();
+		monthlyFee.setId(monthlyFeeId);
+		monthlyFee.setAmount(100.0);
+		monthlyFee.setDueDay(15);
+		monthlyFee.setStatus(PaymentStatus.PENDING);
+		monthlyFee.setLastPayment(null);
+
+		when(monthlyFeeRepository.findById(monthlyFeeId)).thenReturn(Optional.of(monthlyFee));
+		when(monthlyFeeRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		MonthlyFee paidMonthlyFee = monthlyFeeService.payMonthlyFee(monthlyFeeId);
+
+		assertNotNull(paidMonthlyFee);
+		assertEquals(PaymentStatus.PAID, paidMonthlyFee.getStatus());
+		assertEquals(LocalDate.now(), paidMonthlyFee.getLastPayment());
+
+		verify(monthlyFeeRepository).findById(monthlyFeeId);
+		verify(monthlyFeeRepository).save(monthlyFee);		
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	void paymentAlreadyMonthlyFee() {
+
+		Long monthlyFeeId = 1L;
+
+		MonthlyFee monthlyFee = new MonthlyFee();
+		monthlyFee.setId(monthlyFeeId);
+		monthlyFee.setAmount(100.0);
+		monthlyFee.setDueDay(15);
+		monthlyFee.setStatus(PaymentStatus.PAID);
+		monthlyFee.setLastPayment(null);
+
+		when(monthlyFeeRepository.findById(monthlyFeeId)).thenReturn(Optional.of(monthlyFee));
+		when(monthlyFeeRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		assertThrows(PaymentAlreadyException.class, () -> monthlyFeeService.payMonthlyFee(monthlyFeeId));
+
+		verify(monthlyFeeRepository).findById(monthlyFeeId);	
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	void monthlyFeeCancelled() {
+
+		Long monthlyFeeId = 1L;
+
+		MonthlyFee monthlyFee = new MonthlyFee();
+		monthlyFee.setId(monthlyFeeId);
+		monthlyFee.setAmount(100.0);
+		monthlyFee.setDueDay(15);
+		monthlyFee.setStatus(PaymentStatus.CANCELLED);
+		monthlyFee.setLastPayment(null);
+
+		when(monthlyFeeRepository.findById(monthlyFeeId)).thenReturn(Optional.of(monthlyFee));
+		when(monthlyFeeRepository.save(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		assertThrows(MonthlyFeeCancelledException.class, () -> monthlyFeeService.payMonthlyFee(monthlyFeeId));
+
+
+		verify(monthlyFeeRepository).findById(monthlyFeeId);		
+	}
+
+
+
+
+
+
 
 }

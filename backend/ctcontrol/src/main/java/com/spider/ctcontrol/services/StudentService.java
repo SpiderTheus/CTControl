@@ -75,7 +75,8 @@ public class StudentService {
         try {
             Student student = findById(id);
             student = unlinkStudent(student);
-        
+            
+            Objects.requireNonNull(student, "Student must not be null");
             repository.delete(student);
 
         } catch (Exception e) {
