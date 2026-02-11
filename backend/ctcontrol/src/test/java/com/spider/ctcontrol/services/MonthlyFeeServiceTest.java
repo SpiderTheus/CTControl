@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
+
 import java.util.Optional;
 
 @SpringBootTest
@@ -87,8 +88,10 @@ class MonthlyFeeServiceTest {
 		monthlyFeeDto.setDueDay(20);
 		monthlyFeeDto.setStatus(String.valueOf(PaymentStatus.PAID));
 
+		
 		MonthlyFee actual = monthlyFeeService.enrollStudent(monthlyFeeDto, studentId);
 
+		
 		assertNotNull(actual);
 		assertEquals(student, actual.getStudent());
 		assertEquals(150.0, actual.getAmount());
@@ -205,7 +208,7 @@ class MonthlyFeeServiceTest {
 		assertEquals(LocalDate.now(), paidMonthlyFee.getLastPayment());
 
 		verify(monthlyFeeRepository).findById(monthlyFeeId);
-		verify(monthlyFeeRepository).save(monthlyFee);		
+		verify(monthlyFeeRepository).save(monthlyFee);
 	}
 
 	@SuppressWarnings("null")
@@ -226,7 +229,7 @@ class MonthlyFeeServiceTest {
 
 		assertThrows(PaymentAlreadyException.class, () -> monthlyFeeService.payMonthlyFee(monthlyFeeId));
 
-		verify(monthlyFeeRepository).findById(monthlyFeeId);	
+		verify(monthlyFeeRepository).findById(monthlyFeeId);
 	}
 
 	@SuppressWarnings("null")
@@ -248,13 +251,75 @@ class MonthlyFeeServiceTest {
 		assertThrows(MonthlyFeeCancelledException.class, () -> monthlyFeeService.payMonthlyFee(monthlyFeeId));
 
 
-		verify(monthlyFeeRepository).findById(monthlyFeeId);		
+		verify(monthlyFeeRepository).findById(monthlyFeeId);
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	void changeStatusToPending() {
+		LocalDate today = LocalDate.now();
+		Long dayToday = Long.valueOf(today.getDayOfMonth());
+		Long id = 1L;
+
+		MonthlyFee monthlyFee1 = new MonthlyFee();
+		monthlyFee1.setId(id);
+		monthlyFee1.setDueDay(dayToday.intValue());
+		monthlyFee1.setStatus(PaymentStatus.PAID);
+
+		MonthlyFee monthlyFee2 = new MonthlyFee();
+		monthlyFee2.setId(2L);
+		monthlyFee2.setDueDay(dayToday.intValue());
+		monthlyFee2.setStatus(PaymentStatus.PAID);
+
+		when(monthlyFeeRepository.findByDueDayAndStatus(dayToday, PaymentStatus.PAID))
+			.thenReturn(java.util.Arrays.asList(monthlyFee1, monthlyFee2));
+
+		when(monthlyFeeRepository.saveAll(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		monthlyFeeService.changeStatusToPending();
+
+		assertEquals(PaymentStatus.PENDING, monthlyFee1.getStatus());
+		assertEquals(PaymentStatus.PENDING, monthlyFee2.getStatus());
+
+		verify(monthlyFeeRepository).findByDueDayAndStatus(dayToday, PaymentStatus.PAID);
+		verify(monthlyFeeRepository).saveAll(any());
+
+	}
+
+	@SuppressWarnings("null")
+	@Test
+	void NoDebtorsListed() {
+	
+		Long dayToday = 5L;
+		Long id = 1L;
+
+		MonthlyFee monthlyFee1 = new MonthlyFee();
+		monthlyFee1.setId(id);
+		monthlyFee1.setDueDay(6);
+		monthlyFee1.setStatus(PaymentStatus.PAID);
+
+		MonthlyFee monthlyFee2 = new MonthlyFee();
+		monthlyFee2.setId(2L);
+		monthlyFee2.setDueDay(7);
+		monthlyFee2.setStatus(PaymentStatus.PAID);
+
+		when(monthlyFeeRepository.findByDueDayAndStatus(dayToday, PaymentStatus.PAID))
+			.thenReturn(java.util.Arrays.asList(monthlyFee1, monthlyFee2));
+
+		when(monthlyFeeRepository.saveAll(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		monthlyFeeService.changeStatusToPending();
+
+		assertEquals(PaymentStatus.PAID, monthlyFee1.getStatus());
+		assertEquals(PaymentStatus.PAID, monthlyFee2.getStatus());
+
+		
+
 	}
 
 
 
-
-
-
-
 }
+
+
+

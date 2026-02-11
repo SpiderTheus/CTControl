@@ -85,12 +85,19 @@ public class StudentService {
     }
 
     public Student unlinkStudent(Student student) {
+        // Verificar e desvincular da turma
+        if (student.getClassStudent() != null) {
+            student.getClassStudent().getStudents().remove(student);
+        }
 
-        student.getClassStudent().getStudents().remove(student);
-        student.getMonthlyFee().setStatus(PaymentStatus.CANCELLED);
+        // Verificar e cancelar a mensalidade
+        if (student.getMonthlyFee() != null) {
+            student.getMonthlyFee().setStatus(PaymentStatus.CANCELLED);
+        }
+
         student.setMonthlyFee(null);
         student.setClassStudent(null);
-        
+
         return insert(student);
     }   
 

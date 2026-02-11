@@ -23,7 +23,7 @@ public class ChangeStatusJob extends QuartzJobBean {
     protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
      System.out.println("Iniciando Job de verificação de pagamentos...");
           
-        monthlyFeeService.statusPending();
+        monthlyFeeService.changeStatusToPending();
         monthlyFeeService.statusOverdue();
 
         System.out.println("Job de verificação de pagamentos concluído.");

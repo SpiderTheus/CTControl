@@ -42,11 +42,23 @@ public class MonthlyFeeService {
         Student student = studentService.findById(studentId);
         MonthlyFee monthly = new MonthlyFee(monthlyFeeDto);
 
-        if (!student.isMonthlyFee(monthly)) 
-           return update(monthly.getId(), monthly);
+        if (student.isMonthlyFee())
+           return changeMonthlyFee(monthly, student);
         
         return linkMonthlyFee(student, monthly);
     }
+
+    public MonthlyFee changeMonthlyFee(MonthlyFee monthlyFeeDetails, Student student) {
+        MonthlyFee monthlyFee = student.getMonthlyFee();
+
+        monthlyFee.setAmount(monthlyFeeDetails.getAmount());
+        monthlyFee.setDueDay(monthlyFeeDetails.getDueDay());
+        monthlyFee.setStatus(monthlyFeeDetails.getStatus());
+        monthlyFee.setStudent(student); 
+
+        return insert(monthlyFee);  
+
+    } 
 
     @Transactional
     public MonthlyFee linkMonthlyFee(Student student, MonthlyFee monthly){
@@ -112,22 +124,39 @@ public class MonthlyFeeService {
 
         return repository.save(monthlyFee);
     }
-        
+         
     @Transactional
-    public void statusPending() {
+    public void changeStatusToPending() {
         LocalDate today = LocalDate.now();
         Long dayToday = Long.valueOf(today.getDayOfMonth());
 
-        List<MonthlyFee> fees = repository.findByDueDayAndStatus(dayToday, PaymentStatus.PAID);
-    
-        fees.forEach(fee -> {
-            if(isPaidMonth(fee)){
-                fee.setStatus(PaymentStatus.PENDING);   
-            }
-        });
-        repository.saveAll(fees);
-        
+        try {
+            List<MonthlyFee> feesToUpdate = changeDebtoStatus(dayToday);
+            
+            if (feesToUpdate != null && !feesToUpdate.isEmpty()) 
+                repository.saveAll(feesToUpdate);
+            
+        } catch (Exception e) {
+            throw new InsertException("Error changing status to PENDING");
+        }
+     
     }   
+
+    public List<MonthlyFee> changeDebtoStatus(Long dayToday) {
+        
+        List<MonthlyFee> fees = findByDueDayAndStatus(dayToday, PaymentStatus.PAID);
+
+        fees.stream()
+            .filter(fee -> !isPaidMonth(fee))
+            .forEach(fee -> fee.setStatus(PaymentStatus.PENDING));
+        
+        return fees;
+    }
+
+    public List<MonthlyFee> findByDueDayAndStatus(Long dueDay, PaymentStatus status) {
+        return repository.findByDueDayAndStatus(dueDay, status);
+    }
+
 
     public boolean isPaidMonth(MonthlyFee fee) {
         if(fee.getLastPayment() == null) return false;
