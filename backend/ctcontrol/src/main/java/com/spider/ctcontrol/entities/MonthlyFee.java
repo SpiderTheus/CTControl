@@ -86,4 +86,14 @@ public class MonthlyFee implements java.io.Serializable{
         return hasStudent;
     }
 
+    public boolean isPaidMonth() {
+        if(getLastPayment() == null) 
+            return false;
+
+        LocalDate today = LocalDate.now();
+
+        return lastPayment.getMonth() == today.getMonth() && lastPayment.getYear() == today.getYear();
+
+    }
+
 }

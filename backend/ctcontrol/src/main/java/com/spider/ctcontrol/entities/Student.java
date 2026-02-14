@@ -60,4 +60,11 @@ public class Student implements java.io.Serializable {
         return this.monthlyFee != null;
     }
 
+    public boolean isEnrolled() {
+        return this.classStudent != null;
+    }
+
+    public MonthlyFee getMonthlyFee() {
+        return monthlyFee;
+    }
 }

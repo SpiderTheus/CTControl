@@ -57,7 +57,6 @@ public class MonthlyFeeService {
         monthlyFee.setStudent(student); 
 
         return insert(monthlyFee);  
-
     } 
 
     @Transactional
@@ -82,7 +81,6 @@ public class MonthlyFeeService {
     @Transactional
     public MonthlyFee payMonthlyFee(long id) {
         MonthlyFee monthlyFee = findById(id);
-        
 
         if (monthlyFee.isPendingOverdue()) {
              monthlyFee.setStatus(PaymentStatus.PAID);
@@ -122,7 +120,7 @@ public class MonthlyFeeService {
         monthlyFee.getStudent().setMonthlyFee(null);
         monthlyFee.setStudent(null);
 
-        return repository.save(monthlyFee);
+        return insert(monthlyFee);
     }
          
     @Transactional
@@ -147,7 +145,7 @@ public class MonthlyFeeService {
         List<MonthlyFee> fees = findByDueDayAndStatus(dayToday, PaymentStatus.PAID);
 
         fees.stream()
-            .filter(fee -> !isPaidMonth(fee))
+            .filter(fee -> !fee.isPaidMonth())
             .forEach(fee -> fee.setStatus(PaymentStatus.PENDING));
         
         return fees;
@@ -157,24 +155,15 @@ public class MonthlyFeeService {
         return repository.findByDueDayAndStatus(dueDay, status);
     }
 
-
-    public boolean isPaidMonth(MonthlyFee fee) {
-        if(fee.getLastPayment() == null) return false;
-
-        LocalDate lastPayment = fee.getLastPayment();
-        LocalDate today = LocalDate.now();
-
-        return lastPayment.getMonth() == today.getMonth() && lastPayment.getYear() == today.getYear();
-
-    }
-
     @Transactional
     public void statusOverdue() {
         LocalDate deadline = LocalDate.now().minusDays(3);
 
         List<MonthlyFee> lateFees = repository.findLates(deadline.getDayOfMonth());
      
-        lateFees.forEach(fee -> fee.setStatus(PaymentStatus.OVERDUE));
+        lateFees.stream()
+            .filter(fee -> fee.getLastPayment() == null || fee.getLastPayment().isBefore(deadline))
+            .forEach(fee -> fee.setStatus(PaymentStatus.OVERDUE));
         
         repository.saveAll(lateFees);
     }

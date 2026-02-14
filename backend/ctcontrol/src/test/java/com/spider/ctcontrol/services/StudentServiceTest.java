@@ -26,6 +26,7 @@ import com.spider.ctcontrol.entities.enums.Gender;
 import com.spider.ctcontrol.entities.enums.PaymentStatus;
 
 
+
 @SpringBootTest
 class StudentServiceTest {
 
@@ -105,7 +106,7 @@ class StudentServiceTest {
 		classStudent.setDenomination("teste");
 		classStudent.getStudents().add(student);
 		student.setClassStudent(classStudent);
-		
+
 		when(studentRepository.save(student)).thenReturn(student);
 
 		Student actual = studentService.unlinkStudent(student);
@@ -126,6 +127,5 @@ class StudentServiceTest {
 
 		verify(studentRepository, times(1)).findById(studentId);
 	}
-
-
 }
+

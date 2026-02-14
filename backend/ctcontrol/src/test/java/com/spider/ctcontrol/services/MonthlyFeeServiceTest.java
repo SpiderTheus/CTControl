@@ -88,10 +88,10 @@ class MonthlyFeeServiceTest {
 		monthlyFeeDto.setDueDay(20);
 		monthlyFeeDto.setStatus(String.valueOf(PaymentStatus.PAID));
 
-		
+
 		MonthlyFee actual = monthlyFeeService.enrollStudent(monthlyFeeDto, studentId);
 
-		
+
 		assertNotNull(actual);
 		assertEquals(student, actual.getStudent());
 		assertEquals(150.0, actual.getAmount());
@@ -271,8 +271,8 @@ class MonthlyFeeServiceTest {
 		monthlyFee2.setDueDay(dayToday.intValue());
 		monthlyFee2.setStatus(PaymentStatus.PAID);
 
-		when(monthlyFeeRepository.findByDueDayAndStatus(dayToday, PaymentStatus.PAID))
-			.thenReturn(java.util.Arrays.asList(monthlyFee1, monthlyFee2));
+		when(monthlyFeeRepository.findByDueDayAndStatus(dayToday, PaymentStatus.PAID)).
+		  thenReturn(java.util.Arrays.asList(monthlyFee1, monthlyFee2));
 
 		when(monthlyFeeRepository.saveAll(any())).thenAnswer(i -> i.getArguments()[0]);
 
@@ -289,7 +289,7 @@ class MonthlyFeeServiceTest {
 	@SuppressWarnings("null")
 	@Test
 	void NoDebtorsListed() {
-	
+
 		Long dayToday = 5L;
 		Long id = 1L;
 
@@ -303,8 +303,8 @@ class MonthlyFeeServiceTest {
 		monthlyFee2.setDueDay(7);
 		monthlyFee2.setStatus(PaymentStatus.PAID);
 
-		when(monthlyFeeRepository.findByDueDayAndStatus(dayToday, PaymentStatus.PAID))
-			.thenReturn(java.util.Arrays.asList(monthlyFee1, monthlyFee2));
+		when(monthlyFeeRepository.findByDueDayAndStatus(dayToday, PaymentStatus.PAID)).
+		  thenReturn(java.util.Arrays.asList(monthlyFee1, monthlyFee2));
 
 		when(monthlyFeeRepository.saveAll(any())).thenAnswer(i -> i.getArguments()[0]);
 
@@ -312,14 +312,43 @@ class MonthlyFeeServiceTest {
 
 		assertEquals(PaymentStatus.PAID, monthlyFee1.getStatus());
 		assertEquals(PaymentStatus.PAID, monthlyFee2.getStatus());
+	}
 
-		
+	@SuppressWarnings("null")
+	@Test
+	void statusOverdue() {
+		LocalDate today = LocalDate.now();
+		LocalDate deadline = today.minusDays(3);
 
+		Long id1 = 1L;
+		Long id2 = 2L;
+
+		MonthlyFee monthlyFee1 = new MonthlyFee();
+		monthlyFee1.setId(id1);
+		monthlyFee1.setDueDay(8);
+		monthlyFee1.setStatus(PaymentStatus.PENDING);
+	
+
+		MonthlyFee monthlyFee2 = new MonthlyFee();
+		monthlyFee2.setId(id2);
+		monthlyFee2.setDueDay(6);
+		monthlyFee2.setStatus(PaymentStatus.PENDING);
+		monthlyFee2.setLastPayment(LocalDate.of(2025, 1, 7));
+
+		when(monthlyFeeRepository.findLates(deadline.getDayOfMonth())).
+		  thenReturn(java.util.Arrays.asList(monthlyFee1, monthlyFee2));
+
+		when(monthlyFeeRepository.saveAll(any())).thenAnswer(i -> i.getArguments()[0]);
+
+		monthlyFeeService.statusOverdue();
+
+		assertEquals(PaymentStatus.OVERDUE, monthlyFee1.getStatus());
+		assertEquals(PaymentStatus.OVERDUE, monthlyFee2.getStatus());
+
+		verify(monthlyFeeRepository).findLates(deadline.getDayOfMonth());
+		verify(monthlyFeeRepository).saveAll(any());
 	}
 
 
 
 }
-
-
-

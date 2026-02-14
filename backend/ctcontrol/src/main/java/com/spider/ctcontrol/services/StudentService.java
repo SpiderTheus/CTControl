@@ -31,26 +31,26 @@ public class StudentService {
     public List<StudentDto> studentSearchResults (String name) {
         try {
 
-            List<Student> students = repository.findByNameContainingIgnoreCase(name);
+            List<Student> students = searchStudentsName(name);
 
             return students.stream()
                     .map(StudentDto::new)
                     .toList();
 
-        } catch (Exception e) {
+        } catch (NoResultsFoundException e) {
             throw new ErrorSearchingException("Error searching for students with name: " + name + ". " + e.getMessage());
         }
     }
 
     public List<Student> searchStudentsName(String name) {
      
-             List<Student> students = repository.findByNameContainingIgnoreCase(name);
+        List<Student> students = repository.findByNameContainingIgnoreCase(name);
         
-            if (noResultsFound(students)) {
-                throw new NoResultsFoundException(name);
+        if (noResultsFound(students)) {
+            throw new NoResultsFoundException(name);
             }
        
-            return students;
+        return students;
     }
 
     public boolean noResultsFound(List<Student> students) {
@@ -70,7 +70,6 @@ public class StudentService {
         return insert(student);
     }
 
-
     public void delete(long id) {
         try {
             Student student = findById(id);
@@ -85,22 +84,20 @@ public class StudentService {
     }
 
     public Student unlinkStudent(Student student) {
-        // Verificar e desvincular da turma
-        if (student.getClassStudent() != null) {
-            student.getClassStudent().getStudents().remove(student);
-        }
-
-        // Verificar e cancelar a mensalidade
-        if (student.getMonthlyFee() != null) {
+        
+        if (student.isMonthlyFee()) {
             student.getMonthlyFee().setStatus(PaymentStatus.CANCELLED);
+            student.setMonthlyFee(null);
+        } 
+        
+        if(student.isEnrolled()) {
+            student.getClassStudent().getStudents().remove(student);
+            student.setClassStudent(null);
         }
-
-        student.setMonthlyFee(null);
-        student.setClassStudent(null);
-
+        
         return insert(student);
-    }   
-
+    } 
+      
 
     public Student insert(Student student) {
         try {

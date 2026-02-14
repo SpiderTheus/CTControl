@@ -68,7 +68,7 @@ public class ClassStudentService {
         try {
             classStudent.setTeacher(teacherService.findById(teacherId));
 
-            return insertClassStudent(classStudent);
+            return insert(classStudent);
         } catch (Exception e) {
             throw new InsertException("ClassStudent");
         } 
@@ -95,7 +95,7 @@ public class ClassStudentService {
             student.setClassStudent(classStudent);
             classStudent.getStudents().add(student);
 
-            return insertClassStudent(classStudent);
+            return insert(classStudent);
           }
     }
 
@@ -108,7 +108,7 @@ public class ClassStudentService {
       classStudent.setModality(classStudentDetails.getModality());
       classStudent.setDenomination(classStudentDetails.getModality() + " - " + classStudentDetails.getDaysWeek() + " - " + classStudentDetails.getTime());
 
-      return insertClassStudent(classStudent);
+      return insert(classStudent);
     } 
 
     @Transactional
@@ -135,10 +135,10 @@ public class ClassStudentService {
        
         studentService.unlinkStudent(student);
 
-        return insertClassStudent(classStudent);
+        return insert(classStudent);
     }
 
-    public ClassStudent insertClassStudent(ClassStudent classStudent){
+    public ClassStudent insert(ClassStudent classStudent){
         Objects.requireNonNull(classStudent, "ClassStudent must not be null");
         return repository.save(classStudent);
     }
