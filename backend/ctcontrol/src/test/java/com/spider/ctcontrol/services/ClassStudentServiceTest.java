@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 import com.spider.ctcontrol.entities.ClassStudent;
 import com.spider.ctcontrol.entities.Student;
+import com.spider.ctcontrol.entities.Teacher;
 
 
 @SpringBootTest
@@ -153,5 +154,23 @@ class ClassStudentServiceTest {
 	
 	}
 
+	@Test
+	void deleteClassStudentSuccessfully() {
+		Long classStudentId = 1L;
+
+		ClassStudent classStudent = new ClassStudent(); 
+		classStudent.setId(classStudentId);
+		classStudent.setDenomination("Teste ClassStudent");
+
 	
+		classStudent.setTeacher(new Teacher());
+
+		when(classStudentRepository.findById(classStudentId)).thenReturn(java.util.Optional.of(classStudent));
+		when(classStudentRepository.save(classStudent)).thenReturn(classStudent);
+		
+		assertDoesNotThrow(() -> {
+			classStudentService.delete(classStudentId);
+		});
+		
+	}
 }
