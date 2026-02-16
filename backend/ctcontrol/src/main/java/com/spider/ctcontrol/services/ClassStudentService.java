@@ -123,19 +123,20 @@ public class ClassStudentService {
     @Transactional
     public ClassStudent removeStudentInSet(Long classStudentId, Long studentId) {
         ClassStudent classStudent = findById(classStudentId);
-        Student student = studentService.findById(studentId);
+        Student student = unlinkStudentAndReturn(studentId);
         
         classStudent.getStudents().remove(student);
-
-        return unlinkStudentFromClassStudent(student, classStudent);
+       
+        return insert(classStudent);
     }
 
     @Transactional
-    public ClassStudent unlinkStudentFromClassStudent(Student student, ClassStudent classStudent) {
+    public Student unlinkStudentAndReturn(long studentId) {
+        Student student = studentService.findById(studentId);
        
-        studentService.unlinkStudent(student);
+        student.setClassStudent(null);
 
-        return insert(classStudent);
+        return student;
     }
 
     public ClassStudent insert(ClassStudent classStudent){
